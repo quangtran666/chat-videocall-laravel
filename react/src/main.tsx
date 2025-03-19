@@ -8,11 +8,11 @@ import Register from "@/routes/auth/Register.tsx";
 createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
         <Routes>
+            <Route index element={ <LandingPage /> } />
             <Route path="auth">
                 <Route path="login" element={ <Login /> }/>
                 <Route path="register" element={ <Register /> }/>
             </Route>
-            <Route path="/" element={ <LandingPage /> } />
         </Routes>
     </BrowserRouter>
 )

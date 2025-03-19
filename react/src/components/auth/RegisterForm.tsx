@@ -43,7 +43,7 @@ function RegisterForm() {
     return (
         <div className="space-y-6">
             <div>
-                <Link to="/home" className="inline-flex items-center text-sm font-medium text-primary">
+                <Link to="/" className="inline-flex items-center text-sm font-medium text-primary">
                     ← Back to home
                 </Link>
                 <h1 className="mt-4 text-2xl font-bold">Create an account</h1>
