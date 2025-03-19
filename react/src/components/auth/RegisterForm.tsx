@@ -17,6 +17,7 @@ import {Button} from "@/components/ui/button.tsx";
 import {Eye, EyeOff, Github, Loader2} from "lucide-react";
 import {Separator} from "@/components/ui/separator.tsx";
 import {Checkbox} from "@/components/ui/checkbox.tsx";
+import {register} from "@/services/auth-service.ts";
 
 function RegisterForm() {
     const [showPassword, setShowPassword] = useState(false);
@@ -25,10 +26,10 @@ function RegisterForm() {
     const form = useForm<RegisterType>({
         resolver: zodResolver(RegisterSchema),
         defaultValues: {
-            username: "",
+            name: "",
             email: "",
             password: "",
-            confirm_password: "",
+            password_confirmation: "",
             terms: false,
         },
         mode: "onChange",
@@ -36,8 +37,9 @@ function RegisterForm() {
 
     // const password = form.watch('password'); // For password strength indicator
 
-    function onSubmit(data: RegisterType) {
-
+    async function onSubmit(data: RegisterType) {
+        const {terms, ...registerRequest} = data;
+        await register(registerRequest);
     }
 
     return (
@@ -54,7 +56,7 @@ function RegisterForm() {
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                     <FormField
                         control={form.control}
-                        name="username"
+                        name="name"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Username</FormLabel>
@@ -117,7 +119,7 @@ function RegisterForm() {
 
                     <FormField
                         control={form.control}
-                        name="confirm_password"
+                        name="password_confirmation"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Confirm Password</FormLabel>

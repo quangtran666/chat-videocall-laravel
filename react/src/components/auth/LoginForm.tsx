@@ -8,7 +8,8 @@ import {useState} from "react";
 import {Button} from "@/components/ui/button.tsx";
 import {Eye, EyeOff, Github, Loader2} from "lucide-react";
 import {Checkbox} from "@/components/ui/checkbox.tsx";
-import {Separator} from "@radix-ui/react-separator";
+import {login} from "@/services/auth-service.ts";
+import {Separator} from "@/components/ui/separator.tsx";
 
 function LoginForm() {
     const [showPassword, setShowPassword] = useState(false);
@@ -22,8 +23,8 @@ function LoginForm() {
         }
     })
 
-    function onSubmit(data: LoginType) {
-
+    async function onSubmit(data: LoginType) {
+        await login(data);
     }
 
     return (
