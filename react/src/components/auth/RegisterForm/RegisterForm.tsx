@@ -8,16 +8,19 @@ import RegisterFormSeparator from "@/components/auth/RegisterForm/RegisterFormSe
 import SocialLoginButtons from "@/components/auth/SocialLoginButtons.tsx";
 import {toast} from "sonner";
 import RegisterFormFooter from "@/components/auth/RegisterForm/RegisterFormFooter.tsx";
+import {useNavigate} from "react-router";
 
 function RegisterForm() {
     const [loading, setLoading] = useState(false)
     const [socialLoadingProvider, setSocialLoadingProvider] = useState<Providers | null>(null)
+    const navigate = useNavigate();
 
     async function onSubmit(data: RegisterType) {
         setLoading(true);
         try {
             const {terms, ...registerRequest} = data;
             await register(registerRequest);
+            navigate("/chats");
         } catch (error) {
             toast.error("Registration failed.");
         } finally {

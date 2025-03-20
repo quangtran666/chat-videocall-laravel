@@ -10,5 +10,6 @@ Route::get('{provider}/redirect', [SocialiteController::class, 'redirectToProvid
 Route::get('{provider}/callback', [SocialiteController::class, 'handleProviderCallback']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get("/user", static function () { return auth()->user(); });
     Route::post('logout', [AuthenticatedSessionController::class, 'logout'])->middleware('auth:sanctum');
 });

@@ -10,15 +10,18 @@ import LoginFormCredentials from "@/components/auth/LoginForm/LoginFormCredentia
 import LoginFormSeparator from "@/components/auth/LoginForm/LoginFormSeparator.tsx";
 import LoginFormFooter from "@/components/auth/LoginForm/LoginFormFooter.tsx";
 import {LoginType} from "@/types/auth/Login.ts";
+import {useNavigate} from "react-router";
 
 function LoginForm() {
     const [loading, setLoading] = useState(false)
     const [socialLoadingProvider, setSocialLoadingProvider] = useState<Providers | null>(null)
+    const navigate = useNavigate();
 
     async function onSubmit(data: LoginType) {
         setLoading(true)
         try {
             await login(data)
+            navigate("/chats")
         } catch (error) {
             toast.error("Login failed.")
         } finally {

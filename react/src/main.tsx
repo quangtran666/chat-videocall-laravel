@@ -12,6 +12,7 @@ import FindUserPage from "@/pages/find-users/FindUserPage.tsx";
 import SettingPage from "@/pages/settings/SettingPage.tsx";
 import OAuth2Callback from "@/pages/auth/oauth/OAuth2Callback.tsx";
 import AuthLayout from "@/pages/auth/AuthLayout.tsx";
+import AuthenticatedRoutes from "@/routes/AuthenticatedRoutes.tsx";
 
 createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
@@ -22,18 +23,20 @@ createRoot(document.getElementById('root')!).render(
                 <Route path="register" element={ <Register /> }/>
                 <Route path="oauth2/callback/:provider" element={ <OAuth2Callback /> } />
             </Route>
-            <Route path="chats" element={ <Layout /> } >
-                <Route index element={ <ChatHome />} />
-                <Route path=":chatId" element={ <ChatPage />} />
-            </Route>
-            <Route path="rooms" element={ <Layout /> }>
-                <Route index element={ <RoomHome /> } />
-            </Route>
-            <Route path="find-users" element={ <Layout /> }>
-                <Route index element={ <FindUserPage /> } />
-            </Route>
-            <Route path="settings" element={ <Layout /> }>
-                <Route index element={ <SettingPage /> } />
+            <Route element={ <AuthenticatedRoutes/> }>
+                <Route path="chats" element={ <Layout /> } >
+                    <Route index element={ <ChatHome />} />
+                    <Route path=":chatId" element={ <ChatPage />} />
+                </Route>
+                <Route path="rooms" element={ <Layout /> }>
+                    <Route index element={ <RoomHome /> } />
+                </Route>
+                <Route path="find-users" element={ <Layout /> }>
+                    <Route index element={ <FindUserPage /> } />
+                </Route>
+                <Route path="settings" element={ <Layout /> }>
+                    <Route index element={ <SettingPage /> } />
+                </Route>
             </Route>
         </Routes>
     </BrowserRouter>
