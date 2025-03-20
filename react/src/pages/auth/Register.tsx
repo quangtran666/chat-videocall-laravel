@@ -1,10 +1,10 @@
-import RegisterForm from "@/components/auth/RegisterForm.tsx";
+import RegisterForm from "@/components/auth/RegisterForm/RegisterForm.tsx";
 
 function Register() {
     return (
-        <div className="flex min-h-screen bg-gradient-to-b from-background to-muted">
-            {/* Left side - Image/Branding */}
-            <div className="relative hidden w-0 lg:block lg:w-1/2">
+        <div className="flex min-h-screen">
+            {/* Left side - Image/Branding (Fixed) */}
+            <div className="fixed top-0 bottom-0 left-0 hidden lg:block lg:w-1/2">
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-muted">
                     <div className="w-full max-w-md p-8">
                         <div className="text-center">
@@ -24,10 +24,12 @@ function Register() {
                 </div>
             </div>
 
-            {/* Right side - Form */}
-            <div className="flex flex-col justify-center w-full px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24 lg:w-1/2 lg:ml-auto">
-                <div className="w-full max-w-sm mx-auto lg:w-96">
-                    <RegisterForm />
+            {/* Right side - Form (Scrollable) */}
+            <div className="w-full lg:w-1/2 lg:ml-auto min-h-screen overflow-y-auto bg-gradient-to-b from-background to-muted">
+                <div className="flex flex-col justify-center w-full px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+                    <div className="w-full max-w-sm mx-auto lg:w-96">
+                        <RegisterForm />
+                    </div>
                 </div>
             </div>
         </div>
