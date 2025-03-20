@@ -1,5 +1,4 @@
 import Sidebar from "@/components/sidebar/Sidebar.tsx";
-import { Toaster } from "@/components/ui/sonner";
 import {Outlet} from "react-router";
 
 function Layout() {
@@ -11,7 +10,6 @@ function Layout() {
                     <Outlet />
                 </main>
             </div>
-            <Toaster />
         </>
     );
 }

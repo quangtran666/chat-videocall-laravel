@@ -1,12 +1,13 @@
 import {Link, useLocation} from "react-router";
 import {useState} from "react";
-import {LogOut, MessageSquare, PlusCircle, Search, Settings, Users} from "lucide-react";
+import {Loader2, LogOut, MessageSquare, PlusCircle, Search, Settings, Users} from "lucide-react";
 import {Button} from "@/components/ui/button.tsx";
 import {cn} from "@/lib/utils.ts";
 import {Separator} from "@/components/ui/separator.tsx";
 import {ScrollArea} from "@/components/ui/scroll-area.tsx";
 import {UserAvatar} from "@/components/utils/UserAvatar.tsx";
 import CreateRoomDialog from "@/components/chat/CreateRoomDialog.tsx";
+import {useLogout} from "@/hooks/useAuth.ts";
 
 const routes = [
     {
@@ -34,6 +35,7 @@ const routes = [
 function Sidebar() {
     const location = useLocation();
     const [createRoomOpen, setCreateRoomOpen] = useState(false);
+    const logoutMutation = useLogout();
 
     const recentChats = [
         {id: "1", name: "Sarah Johnson", avatar: "https://www.ecomare.nl/wp-content/uploads/2017/04/ill-gewone-zeehond-2010-10sw.jpg", online: true, unread: 3},
@@ -106,8 +108,14 @@ function Sidebar() {
                         <div className="text-sm font-medium">Your Name</div>
                         <div className="text-xs text-muted-foreground">Online</div>
                     </div>
-                    <Button variant="ghost" size="icon" className="ml-auto" aria-label="Log out">
-                        <LogOut className="h-4 w-4" />
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="ml-auto"
+                        aria-label="Log out"
+                        onClick={() => logoutMutation.mutate()}
+                    >
+                        { logoutMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LogOut className="h-4 w-4" /> }
                     </Button>
                 </div>
             </div>

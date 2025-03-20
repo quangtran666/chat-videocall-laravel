@@ -1,12 +1,13 @@
-import {useNavigate, useParams, useSearchParams} from "react-router";
+import {useParams, useSearchParams} from "react-router";
 import {useEffect} from "react";
-import {handleOAuth2Callback} from "@/services/auth-service.ts";
 import {Providers} from "@/types/auth/SocialLogin.ts";
+import {useOAuth2Callback} from "@/hooks/useAuth.ts";
+import LoaderFilling from "@/components/utils/loaders/LoaderFilling.tsx";
 
 function OAuth2Callback() {
     const [searchParams] = useSearchParams();
-    const {provider} = useParams<{ provider: string }>();
-    const navigate = useNavigate();
+    const { provider } = useParams<{ provider: string }>();
+    const oauth2CallbackMutation = useOAuth2Callback();
 
     useEffect(() => {
         const processCallback = async () => {
@@ -14,16 +15,16 @@ function OAuth2Callback() {
                 throw new Error('Invalid callback');
             }
 
-            await handleOAuth2Callback(provider as Providers, searchParams.get('code')!);
-            navigate('/chats');
+            await oauth2CallbackMutation.mutateAsync({
+                provider: provider as Providers,
+                code: searchParams.get('code')!
+            });
         }
 
         processCallback();
     }, []);
 
-    return (
-        <></>
-    );
+    return <LoaderFilling />;
 }
 
 export default OAuth2Callback;

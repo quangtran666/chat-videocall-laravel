@@ -1,6 +1,5 @@
 import {useState} from "react";
 import {RegisterType} from "@/types/auth/Register.ts";
-import {register, socialLogin} from "@/services/auth-service.ts";
 import RegisterFormHeader from "@/components/auth/RegisterForm/RegisterFormHeader.tsx";
 import RegisterFormCredentials from "@/components/auth/RegisterForm/RegisterFormCredentials.tsx";
 import {Providers} from "@/types/auth/SocialLogin.ts";
@@ -8,30 +7,27 @@ import RegisterFormSeparator from "@/components/auth/RegisterForm/RegisterFormSe
 import SocialLoginButtons from "@/components/auth/SocialLoginButtons.tsx";
 import {toast} from "sonner";
 import RegisterFormFooter from "@/components/auth/RegisterForm/RegisterFormFooter.tsx";
-import {useNavigate} from "react-router";
+import {useRegister, useSocialLogin} from "@/hooks/useAuth.ts";
 
 function RegisterForm() {
-    const [loading, setLoading] = useState(false)
     const [socialLoadingProvider, setSocialLoadingProvider] = useState<Providers | null>(null)
-    const navigate = useNavigate();
+
+    const registerMutation = useRegister();
+    const socialLoginMutation = useSocialLogin();
 
     async function onSubmit(data: RegisterType) {
-        setLoading(true);
         try {
-            const {terms, ...registerRequest} = data;
-            await register(registerRequest);
-            navigate("/chats");
+            const { terms, ...registerRequest } = data;
+            await registerMutation.mutateAsync(registerRequest);
         } catch (error) {
             toast.error("Registration failed.");
-        } finally {
-            setLoading(false);
         }
     }
 
     async function onSocialLogin(provider: Providers) {
         setSocialLoadingProvider(provider);
         try {
-            await socialLogin(provider);
+            await socialLoginMutation.mutateAsync(provider);
         } catch (error) {
             toast.error("Social Login failed.");
         } finally {
@@ -45,7 +41,7 @@ function RegisterForm() {
 
             <RegisterFormCredentials
                 onSubmit={onSubmit}
-                loading={loading}
+                loading={registerMutation.isPending}
                 disabled={socialLoadingProvider !== null}
             />
 
@@ -53,7 +49,7 @@ function RegisterForm() {
 
             <SocialLoginButtons
                 onSocialLogin={onSocialLogin}
-                loading={loading}
+                loading={registerMutation.isPending}
                 socialLoadingProvider={socialLoadingProvider}
             />
 
