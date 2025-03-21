@@ -29,7 +29,7 @@ class SocialiteController extends Controller
         $userInDatabase = User::updateOrCreate(
             ['email' => $socialUser->getEmail()],
             [
-                'name' => $socialUser->getName(),
+                'name' => $socialUser->getName() ?: "Unknown Username",
                 'password' => Hash::make(Str::random(24)),
                 'email_verified_at' => now(),
                 'avatar_url' => $socialUser->getAvatar(),

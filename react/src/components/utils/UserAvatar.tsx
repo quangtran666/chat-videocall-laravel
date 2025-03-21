@@ -2,8 +2,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 
 interface UserAvatarProps {
-    src: string
-    alt: string
+    src: string | null | undefined;
+    alt: string | null | undefined;
     className?: string
     size?: "sm" | "md" | "lg"
 }
@@ -15,8 +15,7 @@ export function UserAvatar({ src, alt, className, size = "md" }: UserAvatarProps
         lg: "h-14 w-14",
     }
 
-    const initials = alt
-        .split(" ")
+    const initials = alt?.split(" ")
         .map((n) => n[0])
         .join("")
         .toUpperCase()
@@ -24,7 +23,7 @@ export function UserAvatar({ src, alt, className, size = "md" }: UserAvatarProps
 
     return (
         <Avatar className={cn(sizeClasses[size], className)}>
-            <AvatarImage src={src} alt={alt} />
+            <AvatarImage src={src || ""} alt={alt || ""} />
             <AvatarFallback>{initials}</AvatarFallback>
         </Avatar>
     )
