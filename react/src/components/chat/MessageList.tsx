@@ -15,10 +15,11 @@ interface Message {
     id: string
     content: string
     timestamp: string
-    sender: "me" | "them" | "other"
+    sender: "me" | "them" | "other" | "system"
     senderName?: string
     senderAvatar?: string
     files?: MessageFile[]
+    isSystemMessage?: boolean
 }
 
 interface MessageListProps {
@@ -26,7 +27,7 @@ interface MessageListProps {
     isGroup?: boolean
 }
 
-function MessageList({ messages, isGroup = false }: MessageListProps) {
+export function MessageList({ messages, isGroup = false }: MessageListProps) {
     const scrollRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
@@ -78,6 +79,15 @@ function MessageList({ messages, isGroup = false }: MessageListProps) {
         <ScrollArea className="flex-1 p-4" ref={scrollRef}>
             <div className="flex flex-col gap-4">
                 {messages.map((message) => {
+                    // Handle system messages
+                    if (message.isSystemMessage) {
+                        return (
+                            <div key={message.id} className="flex justify-center">
+                                <div className="rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground">{message.content}</div>
+                            </div>
+                        )
+                    }
+
                     const isMe = message.sender === "me"
 
                     return (
@@ -109,7 +119,7 @@ function MessageList({ messages, isGroup = false }: MessageListProps) {
                 })}
             </div>
         </ScrollArea>
-    );
+    )
 }
 
 export default MessageList;
