@@ -18,7 +18,7 @@ export function RecentChats() {
     return (
         <>
             <div className="px-4 text-xs font-semibold text-muted-foreground">Recent Chats</div>
-            <ScrollArea className="h-[calc(100vh-380px)] px-2 py-2">
+            <ScrollArea className="flex-1 min-h-0 px-2 py-2">
                 {recentChats.map((chat) => (
                     <ChatItem chat={chat} />
                 ))}

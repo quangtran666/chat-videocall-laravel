@@ -10,7 +10,6 @@ import {Button} from "@/components/ui/button.tsx";
 import {Loader2} from "lucide-react";
 
 function DisplaySettings() {
-    // const { theme, setTheme } = useTheme()
     const [isLoading, setIsLoading] = useState(false)
     const [mounted, setMounted] = useState(false)
     const [displaySettings, setDisplaySettings] = useState({
@@ -49,7 +48,7 @@ function DisplaySettings() {
         // Simulate API call
         setTimeout(() => {
             setIsLoading(false)
-            toast("Display settings updated")
+            toast.success("Display settings updated")
         }, 1500)
     }
 
@@ -59,46 +58,6 @@ function DisplaySettings() {
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
-            {/*<Card>*/}
-            {/*    <CardContent className="p-6">*/}
-            {/*        <div className="space-y-4">*/}
-            {/*            <h3 className="text-base font-medium">Theme</h3>*/}
-
-            {/*            <div className="grid grid-cols-3 gap-4">*/}
-            {/*                <div*/}
-            {/*                    className={`flex cursor-pointer flex-col items-center rounded-md border p-4 hover:bg-accent ${theme === "light" ? "border-primary bg-accent" : ""}`}*/}
-            {/*                    onClick={() => setTheme("light")}*/}
-            {/*                >*/}
-            {/*                    <div className="mb-2 rounded-full bg-primary/10 p-2">*/}
-            {/*                        <Sun className="h-5 w-5" />*/}
-            {/*                    </div>*/}
-            {/*                    <span className="text-sm font-medium">Light</span>*/}
-            {/*                </div>*/}
-
-            {/*                <div*/}
-            {/*                    className={`flex cursor-pointer flex-col items-center rounded-md border p-4 hover:bg-accent ${theme === "dark" ? "border-primary bg-accent" : ""}`}*/}
-            {/*                    onClick={() => setTheme("dark")}*/}
-            {/*                >*/}
-            {/*                    <div className="mb-2 rounded-full bg-primary/10 p-2">*/}
-            {/*                        <Moon className="h-5 w-5" />*/}
-            {/*                    </div>*/}
-            {/*                    <span className="text-sm font-medium">Dark</span>*/}
-            {/*                </div>*/}
-
-            {/*                <div*/}
-            {/*                    className={`flex cursor-pointer flex-col items-center rounded-md border p-4 hover:bg-accent ${theme === "system" ? "border-primary bg-accent" : ""}`}*/}
-            {/*                    onClick={() => setTheme("system")}*/}
-            {/*                >*/}
-            {/*                    <div className="mb-2 rounded-full bg-primary/10 p-2">*/}
-            {/*                        <Monitor className="h-5 w-5" />*/}
-            {/*                    </div>*/}
-            {/*                    <span className="text-sm font-medium">System</span>*/}
-            {/*                </div>*/}
-            {/*            </div>*/}
-            {/*        </div>*/}
-            {/*    </CardContent>*/}
-            {/*</Card>*/}
-
             <Card>
                 <CardContent className="p-6">
                     <div className="space-y-4">
@@ -260,7 +219,7 @@ function DisplaySettings() {
                 </Button>
             </div>
         </form>
-    );
+    )
 }
 
 export default DisplaySettings;
