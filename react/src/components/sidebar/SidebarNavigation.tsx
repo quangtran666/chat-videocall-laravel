@@ -1,6 +1,10 @@
 import {MessageSquare, Search, Settings, Users} from "lucide-react";
 import {Link, useLocation} from "react-router";
 import {cn} from "@/lib/utils.ts";
+import {Badge} from "@/components/ui/badge.tsx";
+
+// Mock data for pending friend requests count
+const pendingFriendRequests = 3
 
 const routes = [
     {
@@ -17,6 +21,7 @@ const routes = [
         path: "/find-users",
         label: "Find Users",
         icon: Search,
+        badge: pendingFriendRequests > 0 ? pendingFriendRequests : undefined,
     },
     {
         path: "/settings",
@@ -39,8 +44,12 @@ function SidebarNavigation() {
                         location.pathname === route.path ? "bg-accent text-accent-foreground" : "text-muted-foreground",
                     )}
                 >
-                    <route.icon className="h-4 w-4"/>
-                    {route.label}
+                    <span className="flex-1">{route.label}</span>
+                    {route.badge && (
+                        <Badge variant="default" className="h-5 min-w-5 px-1">
+                            {route.badge}
+                        </Badge>
+                    )}
                 </Link>
             ))}
         </nav>

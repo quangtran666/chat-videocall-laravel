@@ -28,7 +28,7 @@ const EMOJI_CATEGORIES = [
     {
         name: "Food & Drink",
         emojis: ["🍎", "🍐", "🍊", "🍋", "🍌", "🍉", "🍇", "🍓", "🫐", "🍈", "🍒", "🍑", "🥭", "🍍", "🥥", "🥝", "🍅"],
-    }
+    },
 ]
 
 function ChatInput({ onSendMessage }: ChatInputProps) {
@@ -192,7 +192,7 @@ function ChatInput({ onSendMessage }: ChatInputProps) {
                 </div>
             </div>
         </TooltipProvider>
-    );
+    )
 }
 
 export default ChatInput;

@@ -5,7 +5,7 @@ import { Input } from "../ui/input";
 import {ScrollArea} from "@/components/ui/scroll-area.tsx";
 import {UserAvatar} from "@/components/utils/UserAvatar.tsx";
 
-function UserDiscovery() {
+function UserSearch() {
     const [searchQuery, setSearchQuery] = useState("")
     const [friendRequests, setFriendRequests] = useState<Record<string, "none" | "pending" | "sent" | "friends">>({
         "1": "none",
@@ -187,4 +187,4 @@ function UserDiscovery() {
     );
 }
 
-export default UserDiscovery;
+export default UserSearch;
