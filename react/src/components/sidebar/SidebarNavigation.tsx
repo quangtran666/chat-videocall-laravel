@@ -6,6 +6,9 @@ import {Badge} from "@/components/ui/badge.tsx";
 // Mock data for pending friend requests count
 const pendingFriendRequests = 3
 
+// Mock data for pending room join requests count
+const pendingRoomRequests = 2
+
 const routes = [
     {
         path: "/chats",
@@ -16,6 +19,7 @@ const routes = [
         path: "/rooms",
         label: "Rooms",
         icon: Users,
+        badge: pendingRoomRequests > 0 ? pendingRoomRequests : undefined,
     },
     {
         path: "/find-users",
