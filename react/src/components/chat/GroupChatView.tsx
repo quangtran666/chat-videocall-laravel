@@ -4,7 +4,7 @@ import {Sheet, SheetContent, SheetTrigger } from "../ui/sheet"
 import { UserAvatar } from "../utils/UserAvatar"
 import {useState} from "react";
 import { ScrollArea } from "../ui/scroll-area";
-import MessageList from "./MessageList";
+import MessageList, {Message} from "./MessageList";
 import ChatInput from "./ChatInput";
 import AddMemberDialog from "@/components/chat/AddMemberDialog.tsx";
 
@@ -12,11 +12,13 @@ interface GroupChatViewProps {
     chatId: string
 }
 
-function GroupChatView({chatId}: GroupChatViewProps) {
+function GroupChatView({ chatId }: GroupChatViewProps) {
     const [addMemberOpen, setAddMemberOpen] = useState(false)
     const [isSheetOpen, setIsSheetOpen] = useState(false)
     const [isAddingMembers, setIsAddingMembers] = useState(false)
+    const [replyToMessage, setReplyToMessage] = useState<Message | null>(null)
 
+    // In a real app, you would fetch this data from an API
     const [group, setGroup] = useState({
         id: chatId,
         name: "Tech Team",
@@ -31,7 +33,7 @@ function GroupChatView({chatId}: GroupChatViewProps) {
         ],
     })
 
-    const [messages, setMessages] = useState([
+    const [messages, setMessages] = useState<Message[]>([
         {
             id: "1",
             content: "Hey team, how's the new feature coming along?",
@@ -39,12 +41,14 @@ function GroupChatView({chatId}: GroupChatViewProps) {
             sender: "other",
             senderName: "David Miller",
             senderAvatar: "/placeholder.svg?height=40&width=40",
+            reactions: [],
         },
         {
             id: "2",
             content: "I've finished the backend implementation. Just need to test it.",
             timestamp: "9:32 AM",
             sender: "me",
+            reactions: [],
         },
         {
             id: "3",
@@ -53,6 +57,7 @@ function GroupChatView({chatId}: GroupChatViewProps) {
             sender: "other",
             senderName: "Sarah Johnson",
             senderAvatar: "/placeholder.svg?height=40&width=40",
+            reactions: [],
         },
         {
             id: "4",
@@ -61,21 +66,27 @@ function GroupChatView({chatId}: GroupChatViewProps) {
             sender: "other",
             senderName: "Alex Thompson",
             senderAvatar: "/placeholder.svg?height=40&width=40",
+            reactions: [],
         },
         {
             id: "5",
             content: "Will do! I'll check it after lunch.",
             timestamp: "9:42 AM",
             sender: "me",
+            reactions: [],
         },
     ])
 
-    const handleSendMessage = (content: string, files?: File[]) => {
-        const newMessage = {
+    const handleSendMessage = (content: string, files?: File[], replyToId?: string) => {
+        // Find the message being replied to
+        const replyMessage = replyToId ? messages.find((m) => m.id === replyToId) : null
+
+        const newMessage: Message = {
             id: Date.now().toString(),
             content,
             timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
             sender: "me",
+            reactions: [],
             files: files?.map((file) => ({
                 name: file.name,
                 size: file.size,
@@ -84,7 +95,70 @@ function GroupChatView({chatId}: GroupChatViewProps) {
             })),
         }
 
+        // Add reply information if replying to a message
+        if (replyMessage) {
+            newMessage.replyTo = {
+                id: replyMessage.id,
+                content: replyMessage.content,
+                senderName: replyMessage.senderName,
+            }
+        }
+
         setMessages([...messages, newMessage])
+        setReplyToMessage(null) // Clear reply state after sending
+
+        // Add a system message about new message
+        if (files?.length) {
+            const systemMessage = {
+                id: Date.now().toString() + "-system",
+                content: `You shared ${files.length} file${files.length > 1 ? "s" : ""}`,
+                timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+                sender: "system",
+                isSystemMessage: true,
+            }
+            setMessages((prev) => [...prev, systemMessage])
+        }
+    }
+
+    const handleReactionAdd = (messageId: string, emoji: string) => {
+        setMessages(
+            messages.map((message) => {
+                if (message.id === messageId) {
+                    // Check if user already reacted with this emoji
+                    const existingReactionIndex = message.reactions?.findIndex(
+                        (r) => r.emoji === emoji && r.userId === "current-user",
+                    )
+
+                    if (existingReactionIndex !== undefined && existingReactionIndex >= 0) {
+                        // Remove the reaction if it already exists
+                        const updatedReactions = [...(message.reactions || [])]
+                        updatedReactions.splice(existingReactionIndex, 1)
+                        return { ...message, reactions: updatedReactions }
+                    } else {
+                        // Add the new reaction
+                        return {
+                            ...message,
+                            reactions: [
+                                ...(message.reactions || []),
+                                {
+                                    emoji,
+                                    userId: "current-user",
+                                    userName: "You",
+                                },
+                            ],
+                        }
+                    }
+                }
+                return message
+            }),
+        )
+    }
+
+    const handleReplyMessage = (messageId: string) => {
+        const messageToReply = messages.find((m) => m.id === messageId)
+        if (messageToReply) {
+            setReplyToMessage(messageToReply)
+        }
     }
 
     const handleAddMembers = async (selectedUsers: any[]) => {
@@ -145,7 +219,7 @@ function GroupChatView({chatId}: GroupChatViewProps) {
                                 <Info className="h-4 w-4" />
                             </Button>
                         </SheetTrigger>
-                        <SheetContent className="p-4">
+                        <SheetContent>
                             <div className="flex flex-col items-center py-4">
                                 <UserAvatar src={group.avatar} alt={group.name} size="lg" />
                                 <h2 className="mt-2 text-xl font-bold">{group.name}</h2>
@@ -156,7 +230,7 @@ function GroupChatView({chatId}: GroupChatViewProps) {
                                 <Button
                                     variant="ghost"
                                     size="sm"
-                                    className="gap-1 cursor-pointer"
+                                    className="gap-1"
                                     onClick={() => setAddMemberOpen(true)}
                                     disabled={isAddingMembers}
                                 >
@@ -191,8 +265,12 @@ function GroupChatView({chatId}: GroupChatViewProps) {
                     </Sheet>
                 </div>
             </div>
-            <MessageList messages={messages} isGroup />
-            <ChatInput onSendMessage={handleSendMessage} />
+            <MessageList messages={messages} isGroup onReactionAdd={handleReactionAdd} onReplyMessage={handleReplyMessage} />
+            <ChatInput
+                onSendMessage={handleSendMessage}
+                replyTo={replyToMessage}
+                onCancelReply={() => setReplyToMessage(null)}
+            />
 
             <AddMemberDialog
                 open={addMemberOpen}
