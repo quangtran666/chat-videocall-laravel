@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -45,7 +45,7 @@ class Message extends Model
 
     protected $fillable = [
         'content',
-        'emoji',
+        'type',
         'reply_id',
         'sender_id',
     ];
@@ -84,5 +84,22 @@ class Message extends Model
     public function replies(): HasMany
     {
         return $this->hasMany(__CLASS__, 'reply_id');
+    }
+
+    /**
+     * Get the reactions for the message.
+     */
+    public function reactions(): HasMany
+    {
+        return $this->hasMany(MessageReaction::class);
+    }
+
+    // Thêm vào class Message
+    /**
+     * Get the files for the message.
+     */
+    public function files(): HasMany
+    {
+        return $this->hasMany(MessageFile::class);
     }
 }
