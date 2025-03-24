@@ -6,8 +6,11 @@ import {Check, Clock, Users, X} from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Badge } from "../ui/badge";
 import {Button } from "../ui/button";
+import {useGetReceivedFriendRequests} from "@/hooks/useUser.ts";
 
 function ReceivedRequests() {
+    const { data: receivedFriendRequests } = useGetReceivedFriendRequests();
+
     const [receivedRequests, setReceivedRequests] = useState([
         {
             id: "1",

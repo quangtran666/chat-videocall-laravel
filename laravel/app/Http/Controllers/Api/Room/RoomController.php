@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Room;
 
+use App\Enums\RoomRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Room\StoreRoomRequest;
 use App\Http\Requests\Room\UpdateRoomRequest;
@@ -24,6 +25,7 @@ class RoomController extends Controller
     public function store(StoreRoomRequest $request): JsonResponse
     {
         $room = Room::create($request->validated());
+        $room->members()->attach(auth()->id(), ['role' => RoomRole::ADMIN->value]);
         return $this->createdResponse($room);
     }
 

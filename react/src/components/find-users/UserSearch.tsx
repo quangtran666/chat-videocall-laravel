@@ -6,8 +6,11 @@ import {ScrollArea} from "@/components/ui/scroll-area.tsx";
 import {UserAvatar} from "@/components/utils/UserAvatar.tsx";
 import {Badge} from "@/components/ui/badge.tsx";
 import {toast} from "sonner";
+import {useGetPotentialFriends} from "@/hooks/useUser.ts";
 
 function UserSearch() {
+    const {data: potentialFriends} = useGetPotentialFriends();
+
     const [searchQuery, setSearchQuery] = useState("")
     const [userStatus, setUserStatus] = useState<Record<string, "none" | "sent" | "friends">>({
         "1": "none",

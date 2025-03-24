@@ -5,8 +5,11 @@ import { UserAvatar } from "../utils/UserAvatar";
 import { Clock, X } from "lucide-react";
 import {formatDistanceToNow} from "date-fns";
 import { Button } from "../ui/button";
+import {useGetSentFriendRequests} from "@/hooks/useUser.ts";
 
 function SentRequests() {
+    const {data: friendRequests } = useGetSentFriendRequests();
+
     const [sentRequests, setSentRequests] = useState([
         {
             id: "1",
