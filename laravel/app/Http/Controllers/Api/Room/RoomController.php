@@ -8,7 +8,6 @@ use App\Http\Requests\Room\UpdateRoomRequest;
 use App\Models\Room;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class RoomController extends Controller
 {
@@ -22,9 +21,6 @@ class RoomController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreRoomRequest $request): JsonResponse
     {
         $room = Room::create($request->validated());

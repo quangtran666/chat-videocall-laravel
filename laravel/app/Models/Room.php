@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -96,8 +96,8 @@ class Room extends Model
     protected function tags(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->tag ? explode(",", $this->tag) : [],
-            set: fn (array $value) => $this->tag = implode(",", $value)
+            get: static fn ($value) => $value ? explode(",", $value) : [],
+            set: static fn ($value) => is_array($value) ? implode(",", $value) : $value
         );
     }
 }

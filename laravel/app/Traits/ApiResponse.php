@@ -74,7 +74,7 @@ trait ApiResponse
      * @param string $message
      * @return JsonResponse
      */
-    protected function deletedResponse(string $message = 'Deleted Successfully'): JsonResponse
+    protected function noContentResponse(string $message = 'Deleted Successfully'): JsonResponse
     {
         return $this->successResponse([], $message, 204);
     }
