@@ -10,4 +10,9 @@ export const UserSchema = z.object({
     avatar_url: z.string().nullable()
 });
 
+export const ExtendedUserSchema = UserSchema.extend({
+    mutual_friends_count: z.number().optional(),
+})
+
 export type UserType = z.infer<typeof UserSchema>;
+export type ExtendedUserType = z.infer<typeof ExtendedUserSchema>;

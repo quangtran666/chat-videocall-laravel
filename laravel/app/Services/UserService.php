@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 
@@ -10,10 +11,13 @@ class UserService
 {
     /**
      * Get users that the current user hasn't befriended or sent friend requests to
+     * with cursor pagination
      *
-     * @return Collection
+     * @param int $limit
+     * @param string|null $cursor
+     * @return CursorPaginator
      */
-    public function getPotentialFriends(): Collection
+    public function getPotentialFriends(int $limit = 9, ?string $cursor = null): CursorPaginator
     {
         $currentUser = Auth::user();
 
@@ -29,8 +33,10 @@ class UserService
         // Combine all IDs to exclude
         $excludeIds = array_merge([$currentUser?->id], $friendIds, $sentRequestIds, $receivedRequestIds);
 
-        // Get all users except those in the exclude list
-        return User::whereNotIn('id', $excludeIds)->get();
+        // Get all users except those in the exclude list with cursor pagination
+        return User::whereNotIn('id', $excludeIds)
+            ->orderBy('id')
+            ->cursorPaginate($limit, ['*'], 'id', $cursor);
     }
 
     /**

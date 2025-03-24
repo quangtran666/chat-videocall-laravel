@@ -113,8 +113,8 @@ function SentRequests() {
                 <ScrollArea className="h-full">
                     {sentRequests.length > 0 ? (
                         <div className="divide-y">
-                            {sentRequests.map((request) => (
-                                <div key={request.id} className="flex items-center justify-between p-4">
+                            {sentRequests.map((request, index) => (
+                                <div key={index} className="flex items-center justify-between p-4">
                                     <div className="flex items-center gap-3">
                                         <UserAvatar src={request.avatar} alt={request.name} />
                                         <div>

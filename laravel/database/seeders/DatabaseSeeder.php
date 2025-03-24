@@ -31,12 +31,12 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
-        // Create additional users
-        $users = User::factory(10)->create();
+        // Create additional users (increased from 10 to 50)
+        $users = User::factory(50)->create();
         $allUsers = $users->merge([$mainUser]);
 
-        // Create rooms
-        $rooms = Room::factory(5)
+        // Create rooms (increased from 5 to 15)
+        $rooms = Room::factory(15)
             ->sequence(fn ($sequence) => ['owner_id' => $allUsers->random()->id])
             ->create();
 
@@ -49,8 +49,8 @@ class DatabaseSeeder extends Seeder
                 'role' => RoomRole::ADMIN->value,
             ]);
 
-            // Add random users as members
-            $memberCount = random_int(2, 5);
+            // Add random users as members (increased max from 5 to 15)
+            $memberCount = random_int(5, 15);
             $randomUsers = $allUsers->where('id', '!=', $room->owner_id)->random($memberCount);
 
             foreach ($randomUsers as $user) {
@@ -62,13 +62,13 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        // Create room join requests
+        // Create room join requests (increased from 3 to 8)
         foreach ($rooms->where('is_private', true) as $privateRoom) {
             $memberIds = RoomMembership::where('room_id', $privateRoom->id)->pluck('user_id')->toArray();
             $nonMembers = $allUsers->whereNotIn('id', $memberIds);
 
             if ($nonMembers->count() > 0) {
-                $requestCount = min(3, $nonMembers->count());
+                $requestCount = min(8, $nonMembers->count());
                 $requestUsers = $nonMembers->random($requestCount);
 
                 foreach ($requestUsers as $user) {
@@ -102,8 +102,8 @@ class DatabaseSeeder extends Seeder
      */
     private function createFriendships($users)
     {
-        // Create some accepted friend requests
-        for ($i = 0; $i < 15; $i++) {
+        // Create some accepted friend requests (increased from 15 to 100)
+        for ($i = 0; $i < 100; $i++) {
             $sender = $users->random();
             $receiver = $users->where('id', '!=', $sender->id)->random();
 
@@ -132,8 +132,8 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // Create some pending friend requests
-        for ($i = 0; $i < 5; $i++) {
+        // Create some pending friend requests (increased from 5 to 30)
+        for ($i = 0; $i < 30; $i++) {
             $sender = $users->random();
             $receiver = $users->where('id', '!=', $sender->id)->random();
 
@@ -187,7 +187,8 @@ class DatabaseSeeder extends Seeder
     {
         foreach ($rooms as $room) {
             $memberIds = RoomMembership::where('room_id', $room->id)->pluck('user_id')->toArray();
-            $messageCount = random_int(5, 20);
+            // Increased message count from 5-20 to 20-50
+            $messageCount = random_int(20, 50);
 
             $messages = [];
             for ($i = 0; $i < $messageCount; $i++) {
@@ -203,16 +204,16 @@ class DatabaseSeeder extends Seeder
 
                 $messages[] = $message;
 
-                // Add file attachments for some messages
-                if (random_int(1, 5) === 1) {
+                // Add file attachments for some messages (increased probability)
+                if (random_int(1, 3) === 1) {  // Changed from 1 in 5 to 1 in 3
                     MessageFile::factory()->create([
                         'message_id' => $message->id,
                     ]);
                 }
 
-                // Add reactions to some messages
-                if (random_int(1, 3) === 1) {
-                    $reactionCount = random_int(1, 3);
+                // Add reactions to some messages (increased probability and count)
+                if (random_int(1, 2) === 1) {  // Changed from 1 in 3 to 1 in 2
+                    $reactionCount = random_int(1, 5);  // Changed from 1-3 to 1-5
                     $reactors = $users->whereIn('id', $memberIds)->random($reactionCount);
 
                     foreach ($reactors as $reactor) {
@@ -224,9 +225,9 @@ class DatabaseSeeder extends Seeder
                 }
             }
 
-            // Add some reply messages
+            // Add some reply messages (increased from 3 to 10)
             if (count($messages) > 0) {
-                $replyCount = min(3, count($messages));
+                $replyCount = min(10, count($messages));
                 for ($i = 0; $i < $replyCount; $i++) {
                     $originalMessage = $messages[array_rand($messages)];
                     $sender = $users->firstWhere('id', $memberIds[array_rand($memberIds)]);
@@ -259,7 +260,8 @@ class DatabaseSeeder extends Seeder
     private function createConversationMessages($conversations)
     {
         foreach ($conversations as $conversation) {
-            $messageCount = random_int(3, 15);
+            // Increased message count from 3-15 to 10-30
+            $messageCount = random_int(10, 30);
             $participants = [$conversation->user_one_id, $conversation->user_two_id];
 
             $messages = [];
@@ -276,15 +278,15 @@ class DatabaseSeeder extends Seeder
 
                 $messages[] = $message;
 
-                // Add file attachments for some messages
-                if (random_int(1, 5) === 1) {
+                // Add file attachments for some messages (increased probability)
+                if (random_int(1, 3) === 1) {  // Changed from 1 in 5 to 1 in 3
                     MessageFile::factory()->create([
                         'message_id' => $message->id,
                     ]);
                 }
 
-                // Add reactions to some messages
-                if (random_int(1, 3) === 1) {
+                // Add reactions to some messages (increased probability)
+                if (random_int(1, 2) === 1) {  // Changed from 1 in 3 to 1 in 2
                     $reactorId = $sender === $conversation->user_one_id ? $conversation->user_two_id : $conversation->user_one_id;
 
                     MessageReaction::factory()->create([
@@ -294,9 +296,9 @@ class DatabaseSeeder extends Seeder
                 }
             }
 
-            // Add some reply messages
+            // Add some reply messages (increased from 2 to 8)
             if (count($messages) > 0) {
-                $replyCount = min(2, count($messages));
+                $replyCount = min(8, count($messages));
                 for ($i = 0; $i < $replyCount; $i++) {
                     $originalMessage = $messages[array_rand($messages)];
                     $sender = $originalMessage->sender_id === $conversation->user_one_id ? $conversation->user_two_id : $conversation->user_one_id;
@@ -329,7 +331,8 @@ class DatabaseSeeder extends Seeder
     private function createNotifications($users)
     {
         foreach ($users as $user) {
-            $notificationCount = random_int(2, 8);
+            // Increased notification count from 2-8 to 5-15
+            $notificationCount = random_int(5, 15);
 
             for ($i = 0; $i < $notificationCount; $i++) {
                 $type = $this->getRandomNotificationType();
@@ -382,6 +385,7 @@ class DatabaseSeeder extends Seeder
 
     /**
      * Get a random value based on weights.
+     * @throws RandomException
      */
     private function getRandomWeighted($weightedValues): int|string|null
     {

@@ -58,8 +58,8 @@ function ReceivedRequests() {
                 <ScrollArea className="h-full">
                     {receivedRequests.length > 0 ? (
                         <div className="divide-y">
-                            {receivedRequests.map((request) => (
-                                <div key={request.id} className="p-4">
+                            {receivedRequests.map((request, index) => (
+                                <div key={index} className="p-4">
                                     <div className="flex items-start gap-3">
                                         <UserAvatar src={request.avatar} alt={request.name} />
                                         <div className="flex-1">

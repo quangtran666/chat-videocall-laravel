@@ -17,14 +17,19 @@ class UserController extends Controller
         private readonly UserService $userService
     ){}
 
-    public function getPotentialFriends() : JsonResponse
+    public function getPotentialFriends(Request $request) : JsonResponse
     {
-        $potentialFriends = $this->userService->getPotentialFriends();
+        $limit = $request->input('limit', 9);
+        $cursor = $request->input('cursor');
 
-        return $this->successResponse(
-            UserResource::collection($potentialFriends),
-            'Potential friends retrieved successfully'
-        );
+        $potentialFriends = $this->userService->getPotentialFriends($limit, $cursor);
+
+        return $this->successResponse([
+            'data' => UserResource::collection($potentialFriends->items()),
+            'next_cursor' => $potentialFriends->nextCursor()?->encode(),
+            'prev_cursor' => $potentialFriends->previousCursor()?->encode(),
+            'has_more' => $potentialFriends->hasMorePages(),
+        ], 'Potential friends retrieved successfully');
     }
 
     public function getSentFriendRequests() : JsonResponse
