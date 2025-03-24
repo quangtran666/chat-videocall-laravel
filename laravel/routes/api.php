@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\Api\AuthenticatedSessionController;
-use App\Http\Controllers\Api\SocialiteController;
+use App\Http\Controllers\Api\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Api\Auth\SocialiteController;
+use App\Http\Controllers\Api\Room\RoomController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('login', [AuthenticatedSessionController::class, 'login']);
@@ -12,4 +13,6 @@ Route::get('{provider}/callback', [SocialiteController::class, 'handleProviderCa
 Route::middleware('auth:sanctum')->group(function () {
     Route::get("/user", static function () { return auth()->user(); });
     Route::post('logout', [AuthenticatedSessionController::class, 'logout'])->middleware('auth:sanctum');
+
+    Route::apiResource('rooms', RoomController::class);
 });

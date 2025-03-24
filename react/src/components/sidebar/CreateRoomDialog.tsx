@@ -1,26 +1,27 @@
 import {useState} from "react";
-import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from "../ui/dialog";
+import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from "../ui/dialog.tsx";
 import {Input} from "@/components/ui/input.tsx";
-import { Switch } from "../ui/switch";
+import { Switch } from "../ui/switch.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import { Textarea } from "../ui/textarea";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import {Check, ChevronsUpDown, X} from "lucide-react";
+import { Textarea } from "../ui/textarea.tsx";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover.tsx";
+import {Check, ChevronsUpDown, Loader2, X} from "lucide-react";
 import {cn} from "@/lib/utils.ts";
-import { Badge } from "../ui/badge";
+import { Badge } from "../ui/badge.tsx";
 import {CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, Command} from "@/components/ui/command.tsx";
 import {useForm} from "react-hook-form";
 import {RoomSchema, RoomType} from "@/types/room/Room.ts";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form.tsx";
 import {useUser} from "@/hooks/useUser.ts";
+import {useStoreRoom} from "@/hooks/useRoom.ts";
+import {toast} from "sonner"
 
 interface CreateRoomDialogProps {
     open: boolean
     onOpenChange: (open: boolean) => void
 }
 
-// Sample tags - replace with your actual tags
 const availableTags = [
     { value: "general", label: "General" },
     { value: "tech", label: "Technology" },
@@ -33,8 +34,9 @@ const availableTags = [
 ]
 
 export function CreateRoomDialog({ open, onOpenChange }: CreateRoomDialogProps) {
-    // const { data: user } = useUser();
+    const { data: user } = useUser();
     const [commandOpen, setCommandOpen] = useState(false)
+    const storeRoomMutation = useStoreRoom();
 
     const form = useForm<RoomType>({
         resolver: zodResolver(RoomSchema),
@@ -46,7 +48,15 @@ export function CreateRoomDialog({ open, onOpenChange }: CreateRoomDialogProps) 
         },
     })
 
-    function onSubmit(data: RoomType) {
+    async function onSubmit(data: RoomType) {
+        try {
+            await storeRoomMutation.mutateAsync({ ...data, owner_id: user?.id });
+            onOpenChange(false)
+            form.reset();
+        }
+        catch (error) {
+            toast.error("Failed to create room.")
+        }
     }
 
     return (
@@ -207,7 +217,16 @@ export function CreateRoomDialog({ open, onOpenChange }: CreateRoomDialogProps) 
                             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                                 Cancel
                             </Button>
-                            <Button type="submit">Create Room</Button>
+                            <Button type="submit" disabled={storeRoomMutation.isPending}>
+                                {storeRoomMutation.isPending ? (
+                                    <>
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                        Creating...
+                                    </>
+                                ) : (
+                                    "Create Room"
+                                )}
+                            </Button>
                         </DialogFooter>
                     </form>
                 </Form>

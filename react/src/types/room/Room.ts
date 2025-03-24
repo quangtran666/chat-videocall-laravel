@@ -16,4 +16,4 @@ export const RoomSchema = z.object({
 
 export type RoomType = z.infer<typeof RoomSchema>;
 
-export type RoomRequest = RoomType & { owner_id: string };
+export type RoomRequest = RoomType & { owner_id: number | undefined };

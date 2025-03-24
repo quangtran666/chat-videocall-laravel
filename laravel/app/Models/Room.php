@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -27,6 +28,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property-read \App\Models\User $owner
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\RoomRequest> $requests
  * @property-read int|null $requests_count
+ * @property array $tags
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Room newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Room newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Room query()
@@ -46,7 +48,7 @@ class Room extends Model
 
     protected $fillable = [
         'name',
-        'tag',
+        'tags',
         'description',
         'is_private',
         'owner_id',
@@ -89,5 +91,13 @@ class Room extends Model
     public function requests(): HasMany
     {
         return $this->hasMany(RoomRequest::class);
+    }
+
+    protected function tags(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->tag ? explode(",", $this->tag) : [],
+            set: fn (array $value) => $this->tag = implode(",", $value)
+        );
     }
 }

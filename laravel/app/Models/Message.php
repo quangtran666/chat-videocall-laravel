@@ -9,18 +9,22 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- *
+ * 
  *
  * @property int $id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string $content
- * @property array<array-key, mixed>|null $emoji
+ * @property string $type
  * @property int $sender_id
  * @property int|null $reply_id
  * @property string $messageable_type
  * @property int $messageable_id
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MessageFile> $files
+ * @property-read int|null $files_count
  * @property-read Model|\Eloquent $messageable
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MessageReaction> $reactions
+ * @property-read int|null $reactions_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Message> $replies
  * @property-read int|null $replies_count
  * @property-read Message|null $reply
@@ -30,12 +34,12 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Message query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Message whereContent($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Message whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Message whereEmoji($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Message whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Message whereMessageableId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Message whereMessageableType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Message whereReplyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Message whereSenderId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Message whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Message whereUpdatedAt($value)
  * @mixin \Eloquent
  */

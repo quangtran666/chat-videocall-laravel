@@ -55,4 +55,27 @@ trait ApiResponse
     {
         return $this->errorResponse($message, 404);
     }
+
+    /**
+     * Trả về response đã tạo thành công (201)
+     *
+     * @param mixed $data
+     * @param string $message
+     * @return JsonResponse
+     */
+    protected function createdResponse(mixed $data, string $message = 'Created Successfully'): JsonResponse
+    {
+        return $this->successResponse($data, $message, 201);
+    }
+
+    /**
+     * Trả về response đã xoá thành công (204)
+     *
+     * @param string $message
+     * @return JsonResponse
+     */
+    protected function deletedResponse(string $message = 'Deleted Successfully'): JsonResponse
+    {
+        return $this->successResponse([], $message, 204);
+    }
 }

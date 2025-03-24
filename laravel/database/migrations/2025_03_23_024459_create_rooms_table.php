@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('name');
-            $table->string('tag');
+            $table->string('tags');
             $table->text('description');
             $table->boolean('is_private')->default(false);
             $table->foreignId('owner_id')->constrained('users');
