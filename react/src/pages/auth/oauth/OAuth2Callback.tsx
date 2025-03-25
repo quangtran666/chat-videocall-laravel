@@ -2,7 +2,7 @@ import {useParams, useSearchParams} from "react-router";
 import {useEffect} from "react";
 import {Providers} from "@/types/auth/SocialLogin.ts";
 import {useOAuth2Callback} from "@/hooks/useAuth.ts";
-import LoaderFilling from "@/components/utils/loaders/LoaderFilling.tsx";
+import LoaderFillingScreen from "@/components/utils/loaders/LoaderFilling/LoaderFillingScreen.tsx";
 
 function OAuth2Callback() {
     const [searchParams] = useSearchParams();
@@ -24,7 +24,7 @@ function OAuth2Callback() {
         processCallback();
     }, []);
 
-    return <LoaderFilling />;
+    return <LoaderFillingScreen />;
 }
 
 export default OAuth2Callback;

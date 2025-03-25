@@ -8,6 +8,8 @@ import {toast} from "sonner";
 import {useGetPotentialFriends} from "@/hooks/useUser.ts";
 import {useInView} from "react-intersection-observer";
 import { ScrollArea } from "../ui/scroll-area";
+import LoaderFillingSmall from "@/components/utils/loaders/LoaderFilling/LoaderFillingSmall.tsx";
+import LoaderShape from "@/components/utils/loaders/LoaderShape/LoaderShape.tsx";
 
 function UserSearch() {
     const {
@@ -74,9 +76,7 @@ function UserSearch() {
 
             <div className="flex-1 min-h-0">
                 {isPending ? (
-                    <div className="flex h-full items-center justify-center p-8">
-                        <div className="text-center">Loading users...</div>
-                    </div>
+                    <LoaderShape className={"flex h-full items-center justify-center p-8"} />
                 ) : filteredUsers && filteredUsers.length > 0 ? (
                     <ScrollArea className="h-full">
                         <div className="grid gap-4 px-4 md:grid-cols-2 lg:grid-cols-3">
@@ -132,7 +132,7 @@ function UserSearch() {
                         <div ref={ref} />
                         {isFetchingNextPage && (
                             <div className="flex justify-center p-4">
-                                <div className="text-sm text-muted-foreground">Loading more users...</div>
+                                <LoaderFillingSmall />
                             </div>
                         )}
                     </ScrollArea>

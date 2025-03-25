@@ -1,5 +1,5 @@
 import {Navigate, Outlet} from "react-router";
-import LoaderFilling from "@/components/utils/loaders/LoaderFilling.tsx";
+import LoaderFillingScreen from "@/components/utils/loaders/LoaderFilling/LoaderFillingScreen.tsx";
 import {useUser} from "@/hooks/useUser.ts";
 
 type AuthenticatedRoutesProps = {
@@ -10,7 +10,7 @@ function AuthenticatedRoutes({ redirectUrl = "/auth/login" } : AuthenticatedRout
     const { isLoading, isError, data } = useUser();
 
     if (isLoading) {
-        return <LoaderFilling />
+        return <LoaderFillingScreen />
     }
 
     return !isError && data ? <Outlet /> : <Navigate to={redirectUrl} replace />;
