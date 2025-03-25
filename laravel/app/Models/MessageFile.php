@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $size
  * @property string|null $url
  * @property-read \App\Models\Message $message
+ * @method static \Database\Factories\MessageFileFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MessageFile newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MessageFile newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MessageFile query()

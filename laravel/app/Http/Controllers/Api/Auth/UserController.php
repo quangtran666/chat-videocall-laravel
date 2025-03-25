@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Pagination\CursorPaginationRequest;
 use App\Http\Resources\UserResource;
 use App\Services\UserService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -15,14 +15,13 @@ class UserController extends Controller
 
     public function __construct(
         private readonly UserService $userService
-    ){}
-
-    public function getPotentialFriends(Request $request) : JsonResponse
+    )
     {
-        $limit = $request->input('limit', 9);
-        $cursor = $request->input('cursor');
+    }
 
-        $potentialFriends = $this->userService->getPotentialFriends($limit, $cursor);
+    public function getPotentialFriends(CursorPaginationRequest $request): JsonResponse
+    {
+        $potentialFriends = $this->userService->getPotentialFriends($request->limit, $request->cursor);
 
         return $this->successResponse([
             'data' => UserResource::collection($potentialFriends->items()),
@@ -32,17 +31,19 @@ class UserController extends Controller
         ], 'Potential friends retrieved successfully');
     }
 
-    public function getSentFriendRequests() : JsonResponse
+    public function getSentFriendRequests(CursorPaginationRequest $request): JsonResponse
     {
-        $sentFriendRequests = $this->userService->getSentFriendRequestsUsers();
+        $sentFriendRequests = $this->userService->getSentFriendRequestsUsers($request->limit, $request->cursor);
 
-        return $this->successResponse(
-            UserResource::collection($sentFriendRequests),
-            'Sent friend requests retrieved successfully'
-        );
+        return $this->successResponse([
+            'data' => UserResource::collection($sentFriendRequests->items()),
+            'next_cursor' => $sentFriendRequests->nextCursor()?->encode(),
+            'prev_cursor' => $sentFriendRequests->previousCursor()?->encode(),
+            'has_more' => $sentFriendRequests->hasMorePages(),
+        ], 'Sent friend requests retrieved successfully');
     }
 
-    public function getReceivedFriendRequests() : JsonResponse
+    public function getReceivedFriendRequests(): JsonResponse
     {
         $requestingUsers = $this->userService->getReceivedFriendRequestsUsers();
 

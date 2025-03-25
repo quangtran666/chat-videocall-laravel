@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import {useEffect, useRef} from "react";
 import { useInView } from "react-intersection-observer";
 import LoaderFillingSmall from "@/components/utils/loaders/LoaderFilling/LoaderFillingSmall.tsx";
 
@@ -10,13 +10,19 @@ interface LoadMoreTriggerProps {
 
 function LoadMoreTrigger({ onLoadMore, hasMore, isLoading }: LoadMoreTriggerProps) {
     const { ref, inView } = useInView({
-        rootMargin: "50px",
+        rootMargin: "20px",
     });
 
+    const hasTriggered = useRef(false);
+
     useEffect(() => {
-        if (inView && hasMore && !isLoading) {
-            console.log("Reach bottom and fetching next page");
+        if (!inView) {
+            hasTriggered.current = false;
+        }
+
+        if (inView && hasMore && !isLoading && !hasTriggered.current) {
             onLoadMore();
+            hasTriggered.current = true;
         }
     }, [inView, hasMore, isLoading, onLoadMore]);
 

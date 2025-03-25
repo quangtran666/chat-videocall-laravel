@@ -1,47 +1,32 @@
-import {useState} from "react";
-import {useGetPotentialFriends} from "@/hooks/useUser.ts";
-import { ScrollArea } from "../../ui/scroll-area.tsx";
+import {ScrollArea} from "../../ui/scroll-area.tsx";
+import {useGetSentFriendRequests} from "@/hooks/useUser.ts";
 import LoaderShape from "@/components/utils/loaders/LoaderShape/LoaderShape.tsx";
-import SearchBar from "@/components/find-users/UserSearch/SearchBar.tsx";
-import UserSearchCard from "@/components/find-users/UserSearch/UserSearchCard.tsx";
 import LoadMoreTrigger from "@/components/find-users/LoadMoreTrigger.tsx";
+import SentFriendCard from "@/components/find-users/SentFriend/SentFriendCard.tsx";
 
-function UserSearch() {
+function SentRequests() {
     const {
         data,
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
         isPending,
-    } = useGetPotentialFriends(12);
+    } = useGetSentFriendRequests(12);
 
-    const [searchQuery, setSearchQuery] = useState("");
-
-    const allUsers = data?.pages.flatMap(page => page.data) || [];
-
-    // Filter users based on search query
-    const filteredUsers = allUsers.filter(
-        (user) =>
-            user.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            user.email?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const allRequests = data?.pages.flatMap(page => page.data) || [];
 
     return (
         <div className="flex flex-col h-full">
-            <SearchBar
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-            />
-
+            {/* The key fix is here - ensuring the ScrollArea has a fixed height or fills the remaining space */}
             <div className="flex-1 min-h-0">
                 {isPending ? (
-                    <LoaderShape className={"flex h-full items-center justify-center p-8"} />
-                ) : filteredUsers && filteredUsers.length > 0 ? (
+                    <LoaderShape className={"flex h-full items-center justify-center p-8"}/>
+                ) : allRequests && allRequests.length > 0 ? (
                     <ScrollArea className="h-full">
-                        <div className="grid gap-4 px-4 md:grid-cols-2 lg:grid-cols-3">
-                            {filteredUsers.map((user, index) => (
-                                <UserSearchCard
-                                    {...user}
+                        <div className="divide-y">
+                            {allRequests.map((request, index) => (
+                                <SentFriendCard
+                                    {...request}
                                     key={index}
                                 />
                             ))}
@@ -64,7 +49,7 @@ function UserSearch() {
                 )}
             </div>
         </div>
-    );
+    )
 }
 
-export default UserSearch;
+export default SentRequests;

@@ -11,13 +11,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
- *
+ * 
  *
  * @property int $id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string $name
- * @property string $tag
+ * @property string $tags
  * @property string $description
  * @property bool $is_private
  * @property int $owner_id
@@ -28,7 +28,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property-read \App\Models\User $owner
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\RoomRequest> $requests
  * @property-read int|null $requests_count
- * @property array $tags
+ * @method static \Database\Factories\RoomFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Room newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Room newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Room query()
@@ -38,7 +38,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Room whereIsPrivate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Room whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Room whereOwnerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Room whereTag($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Room whereTags($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Room whereUpdatedAt($value)
  * @mixin \Eloquent
  */

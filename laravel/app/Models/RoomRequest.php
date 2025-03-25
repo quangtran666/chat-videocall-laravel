@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read \App\Models\User|null $reviewer
  * @property-read \App\Models\Room $room
  * @property-read \App\Models\User $user
+ * @method static \Database\Factories\RoomRequestFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RoomRequest newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RoomRequest newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RoomRequest query()

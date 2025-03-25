@@ -41,37 +41,40 @@ class UserService
 
     /**
      * Get users that the current user has sent friend requests to
-     * with eager loading to avoid N+1 problem
+     * and cursor pagination
      *
-     * @return Collection
+     * @param int $limit
+     * @param string|null $cursor
+     * @return CursorPaginator
      */
-    public function getSentFriendRequestsUsers() : Collection
+    public function getSentFriendRequestsUsers(int $limit = 9, ?string $cursor = null) : CursorPaginator
     {
         $currentUser = Auth::user();
 
-        // Eager load the receiver relationship to avoid N+1 query
-        $sentRequests = $currentUser?->sentFriendRequests()->with('receiver')->get();
+        $sentRequestUserIds = $currentUser?->sentFriendRequests()->pluck('receiver_id')->toArray();
 
-        return $sentRequests->map(function ($request) {
-            return $request->receiver;
-        })->filter(); // Filter out any null values
+        return User::whereIn('id', $sentRequestUserIds)
+            ->orderBy('id')
+            ->cursorPaginate($limit, ['*'], 'id', $cursor);
     }
 
     /**
      * Get users that have sent friend requests to the current user
-     * with eager loading to avoid N+1 problem
+     * and cursor pagination
      *
-     * @return Collection
+     * @param int $limit
+     * @param string|null $cursor
+     * @return CursorPaginator
      */
-    public function getReceivedFriendRequestsUsers() : Collection
+    public function getReceivedFriendRequestsUsers(int $limit = 9, ?string $cursor = null) : CursorPaginator
     {
         $currentUser = Auth::user();
 
-        $receivedRequests = $currentUser?->receivedFriendRequests()->with('sender')->get();
+        $receivedRequests = $currentUser?->receivedFriendRequests()->pluck('sender_id')->toArray();
 
-        return $receivedRequests->map(function ($request) {
-            return $request->sender;
-        })->filter();
+        return User::whereIn('id', $receivedRequests)
+            ->orderBy('id')
+            ->cursorPaginate($limit, ['*'], 'id', $cursor);
     }
 
     /**

@@ -7,17 +7,23 @@ export const getMe = async () : Promise<UserType> => {
     return UserSchema.parse(response.data);
 }
 
-export const getPotentialFriends = async ({ pageParam, limit } : CursorPaginateRequest) => {
+const createParams = (pageParam: number | null, limit: number) => {
     const params = new URLSearchParams();
     if (pageParam) params.append('cursor', pageParam.toString());
     params.append('limit', limit.toString());
+    return params;
+}
+
+export const getPotentialFriends = async ({ pageParam, limit } : CursorPaginateRequest) => {
+    const params = createParams(pageParam, limit);
     const response = await axiosInstance.get<CursorPaginateResponse<ExtendedUserType>>(`user/friends/potential-friends?${params.toString()}`);
 
     return response.data;
 }
 
-export const getSentFriendRequests = async () => {
-    const response = await axiosInstance.get<ExtendedUserType>("user/friends/sent-friend-requests");
+export const getSentFriendRequests = async ({ pageParam, limit } : CursorPaginateRequest) => {
+    const params = createParams(pageParam, limit);
+    const response = await axiosInstance.get<CursorPaginateResponse<ExtendedUserType>>(`user/friends/sent-friend-requests?${params.toString()}`);
     return response.data;
 }
 

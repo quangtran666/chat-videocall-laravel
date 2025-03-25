@@ -2,7 +2,7 @@ import UserSearch from "@/components/find-users/UserSearch/UserSearch.tsx";
 import {useState} from "react";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs.tsx";
 import { Search, UserCheck, UserPlus } from "lucide-react";
-import SentRequests from "@/components/find-users/SentRequests";
+import SentRequests from "@/components/find-users/SentFriend/SentRequests.tsx";
 import ReceivedRequests from "@/components/find-users/ReceivedRequests.tsx";
 
 function FindUserPage() {

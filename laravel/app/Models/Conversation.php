@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property-read int|null $messages_count
  * @property-read \App\Models\User $userOne
  * @property-read \App\Models\User $userTwo
+ * @method static \Database\Factories\ConversationFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Conversation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Conversation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Conversation query()

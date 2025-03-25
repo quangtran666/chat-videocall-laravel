@@ -29,6 +29,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property-read int|null $replies_count
  * @property-read Message|null $reply
  * @property-read \App\Models\User $sender
+ * @method static \Database\Factories\MessageFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Message newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Message newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Message query()

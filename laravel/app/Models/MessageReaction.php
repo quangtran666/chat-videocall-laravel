@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $user_id
  * @property-read \App\Models\Message $message
  * @property-read \App\Models\User $user
+ * @method static \Database\Factories\MessageReactionFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MessageReaction newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MessageReaction newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MessageReaction query()

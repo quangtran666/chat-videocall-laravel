@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property RoomRole $role
  * @property-read \App\Models\Room $room
  * @property-read \App\Models\User $user
+ * @method static \Database\Factories\RoomMembershipFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RoomMembership newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RoomMembership newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RoomMembership query()

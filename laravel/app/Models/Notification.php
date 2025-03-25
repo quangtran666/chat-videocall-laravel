@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $content
  * @property bool $is_read
  * @property int $user_id
+ * @method static \Database\Factories\NotificationFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Notification newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Notification newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Notification query()

@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property RequestStatus $status
  * @property-read \App\Models\User $receiver
  * @property-read \App\Models\User $sender
+ * @method static \Database\Factories\FriendRequestFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FriendRequest newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FriendRequest newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FriendRequest query()
