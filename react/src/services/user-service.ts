@@ -9,7 +9,7 @@ export const getMe = async () : Promise<UserType> => {
 
 export const getPotentialFriends = async ({ pageParam, limit } : CursorPaginateRequest) => {
     const params = new URLSearchParams();
-    if (pageParam) params.append('cursor', pageParam);
+    if (pageParam) params.append('cursor', pageParam.toString());
     params.append('limit', limit.toString());
     const response = await axiosInstance.get<CursorPaginateResponse<ExtendedUserType>>(`user/friends/potential-friends?${params.toString()}`);
 

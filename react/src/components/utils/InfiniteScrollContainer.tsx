@@ -1,13 +1,14 @@
-import {ReactNode} from "react";
 import {useInView} from "react-intersection-observer";
+import {ScrollArea} from "@/components/ui/scroll-area.tsx";
+import {ReactNode} from "react";
 
 type InfiniteScrollContainerProps = {
-    children: ReactNode;
     onBottomReached: () => void;
     className?: string;
+    children: ReactNode;
 }
 
-function InfiniteScrollContainer({ children, onBottomReached, className }: InfiniteScrollContainerProps) {
+function InfiniteScrollContainer({ onBottomReached, className, children}: InfiniteScrollContainerProps) {
     const { ref } = useInView({
         onChange(inView) {
             if (inView) {
@@ -17,10 +18,12 @@ function InfiniteScrollContainer({ children, onBottomReached, className }: Infin
         }
     });
 
+    const PivotComponent = () => <div ref={ref} />;
+
+    console.log("InfiniteScrollContainer rendered");
+
     return (
         <div className={className}>
-            {children}
-            <div ref={ref} />
         </div>
     );
 }

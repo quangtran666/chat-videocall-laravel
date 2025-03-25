@@ -12,19 +12,28 @@ export const useUser = () => {
 
 export const useGetPotentialFriends = ( limit = 9 ) => {
     return useInfiniteQuery({
-        queryKey: ['potential-friends', limit],
+        queryKey: ['potential-friends'],
         queryFn: ({ pageParam }) => getPotentialFriends({ pageParam, limit }),
-        initialPageParam: null as string | null,
-        getNextPageParam: (lastPage) => lastPage.next_cursor,
-        getPreviousPageParam: (firstPage) => firstPage.prev_cursor,
+        initialPageParam: null as number | null,
+        getNextPageParam: (lastPage) => {
+            // @ts-ignore
+            return lastPage.data.next_cursor
+        },
+        getPreviousPageParam: (firstPage) => {
+            // @ts-ignore
+            return firstPage.data.prev_cursor
+        },
         select: (data) => {
             return {
                 pages: data.pages.map(page => ({
                     // @ts-ignore
                     data: page.data.data,
-                    next_cursor: page.next_cursor,
-                    prev_cursor: page.prev_cursor,
-                    has_more: page.has_more
+                    // @ts-ignore
+                    next_cursor: page.data.next_cursor,
+                    // @ts-ignore
+                    prev_cursor: page.data.prev_cursor,
+                    // @ts-ignore
+                    has_more: page.data.has_more
                 })),
                 pageParams: data.pageParams
             }

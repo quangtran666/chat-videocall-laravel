@@ -6,6 +6,6 @@ export type CursorPaginateResponse<T> = {
 }
 
 export type CursorPaginateRequest = {
-    pageParam: string | null;
+    pageParam: number | null;
     limit: number;
 }
