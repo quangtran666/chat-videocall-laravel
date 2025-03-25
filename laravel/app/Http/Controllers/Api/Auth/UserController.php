@@ -43,13 +43,15 @@ class UserController extends Controller
         ], 'Sent friend requests retrieved successfully');
     }
 
-    public function getReceivedFriendRequests(): JsonResponse
+    public function getReceivedFriendRequests(CursorPaginationRequest $request): JsonResponse
     {
-        $requestingUsers = $this->userService->getReceivedFriendRequestsUsers();
+        $requestingUsers = $this->userService->getReceivedFriendRequestsUsers($request->limit, $request->cursor);
 
-        return $this->successResponse(
-            UserResource::collection($requestingUsers),
-            'Users who sent you friend requests retrieved successfully'
-        );
+        return $this->successResponse([
+            'data' => UserResource::collection($requestingUsers->items()),
+            'next_cursor' => $requestingUsers->nextCursor()?->encode(),
+            'prev_cursor' => $requestingUsers->previousCursor()?->encode(),
+            'has_more' => $requestingUsers->hasMorePages(),
+        ], 'Users who sent you friend requests retrieved successfully');
     }
 }

@@ -1,30 +1,30 @@
-import {ScrollArea} from "../../ui/scroll-area.tsx";
-import {useGetSentFriendRequests} from "@/hooks/useUser.ts";
+import {ScrollArea} from "@/components/ui/scroll-area.tsx";
+import {useGetReceivedFriendRequests} from "@/hooks/useUser.ts";
 import LoaderShape from "@/components/utils/loaders/LoaderShape/LoaderShape.tsx";
 import LoadMoreTrigger from "@/components/find-users/LoadMoreTrigger.tsx";
-import SentFriendCard from "@/components/find-users/SentFriend/SentFriendCard.tsx";
+import ReceivedRequestCard from "@/components/find-users/ReceivedRequest/ReceivedRequestCard.tsx";
 
-function SentRequests() {
+function ReceivedRequests() {
     const {
         data,
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
         isPending,
-    } = useGetSentFriendRequests(12);
+    } = useGetReceivedFriendRequests(12);
 
-    const allRequests = data?.pages.flatMap(page => page.data) || [];
+    const receivedRequests = data?.pages.flatMap(page => page.data) || [];
 
     return (
         <div className="flex flex-col h-full">
             <div className="flex-1 min-h-0">
                 {isPending ? (
                     <LoaderShape className={"flex h-full items-center justify-center p-8"}/>
-                ) : allRequests && allRequests.length > 0 ? (
+                ) : receivedRequests && receivedRequests.length > 0 ? (
                     <ScrollArea className="h-full">
                         <div className="divide-y">
-                            {allRequests.map((request, index) => (
-                                <SentFriendCard
+                            {receivedRequests.map((request, index) => (
+                                <ReceivedRequestCard
                                     {...request}
                                     key={index}
                                 />
@@ -51,4 +51,4 @@ function SentRequests() {
     )
 }
 
-export default SentRequests;
+export default ReceivedRequests;

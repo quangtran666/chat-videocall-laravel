@@ -3,7 +3,7 @@ import {useState} from "react";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs.tsx";
 import { Search, UserCheck, UserPlus } from "lucide-react";
 import SentRequests from "@/components/find-users/SentFriend/SentRequests.tsx";
-import ReceivedRequests from "@/components/find-users/ReceivedRequests.tsx";
+import ReceivedRequests from "@/components/find-users/ReceivedRequest/ReceivedRequests.tsx";
 
 function FindUserPage() {
     const [activeTab, setActiveTab] = useState("search")
