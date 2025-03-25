@@ -1,4 +1,4 @@
-import UserSearch from "@/components/find-users/UserSearch.tsx";
+import UserSearch from "@/components/find-users/UserSearch/UserSearch.tsx";
 import {useState} from "react";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs.tsx";
 import { Search, UserCheck, UserPlus } from "lucide-react";
