@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use Illuminate\Contracts\Pagination\CursorPaginator;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 
@@ -95,5 +96,22 @@ class UserService
 
         // Count the intersection of the two arrays
         return count(array_intersect($currentUserFriendIds, $otherUserFriendIds));
+    }
+
+    /**
+     * Search users by name or email using full-text search
+     *
+     * @param string $query The search query
+     * @param int $perPage Number of results per page
+     * @param int $page Current page number
+     * @return LengthAwarePaginator
+     */
+    public function searchUsers(string $query, int $perPage = 12, int $page = 1): LengthAwarePaginator
+    {
+        $userId = Auth::id();
+
+        return User::search($query)
+            ->whereNotIn('id', [$userId])
+            ->paginate($perPage, 'page', $page);
     }
 }

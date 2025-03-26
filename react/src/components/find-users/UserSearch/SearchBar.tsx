@@ -1,5 +1,6 @@
 import { Search } from "lucide-react";
 import {Input} from "@/components/ui/input.tsx";
+import {getSearchUsers} from "@/services/user-service.ts";
 
 interface SearchBarProps {
     searchQuery: string;
@@ -16,7 +17,10 @@ function SearchBar({ searchQuery, setSearchQuery }: SearchBarProps) {
                     placeholder="Search by name, username, or bio..."
                     className="pl-8"
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={(e) => {
+                        getSearchUsers({query: e.target.value});
+                        setSearchQuery(e.target.value)
+                    }}
                 />
             </div>
         </div>

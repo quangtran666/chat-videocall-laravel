@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pagination\CursorPaginationRequest;
+use App\Http\Requests\User\UserSearchRequest;
 use App\Http\Resources\UserResource;
 use App\Services\UserService;
 use App\Traits\ApiResponse;
@@ -53,5 +54,22 @@ class UserController extends Controller
             'prev_cursor' => $requestingUsers->previousCursor()?->encode(),
             'has_more' => $requestingUsers->hasMorePages(),
         ], 'Users who sent you friend requests retrieved successfully');
+    }
+
+    public function searchUsers(UserSearchRequest $request): JsonResponse
+    {
+        $searchResults = $this->userService->searchUsers(
+            $request->get('query'),
+            $request->get('per_page', 12),
+            $request->get('page', 1)
+        );
+
+        return $this->successResponse([
+            'data' => UserResource::collection($searchResults->items()),
+            'current_page' => $searchResults->currentPage(),
+            'per_page' => $searchResults->perPage(),
+            'total' => $searchResults->total(),
+            'last_page' => $searchResults->lastPage(),
+        ], 'Users retrieved successfully');
     }
 }

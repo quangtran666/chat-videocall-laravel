@@ -16,6 +16,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('user')->group(function () {
        Route::get('/', static function () { return auth()->user(); });
+       Route::get('/search', [UserController::class, 'searchUsers']);
        Route::prefix('friends')->group(function () {
            Route::get('/potential-friends', [UserController::class, 'getPotentialFriends']);
            Route::get('/sent-friend-requests', [UserController::class, 'getSentFriendRequests']);
