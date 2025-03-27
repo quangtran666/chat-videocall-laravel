@@ -89,6 +89,7 @@ class User extends Authenticatable
     public function toSearchableArray(): array
     {
         return [
+            'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
         ];
@@ -99,7 +100,7 @@ class User extends Authenticatable
      */
     public function searchableUsing(): Engine
     {
-        return app(EngineManager::class)->engine('algolia');
+        return app(EngineManager::class)->engine('tntsearch');
     }
 
     /**
