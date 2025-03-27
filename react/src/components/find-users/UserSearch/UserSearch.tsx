@@ -1,30 +1,44 @@
 import {useState} from "react";
-import {useGetPotentialFriends} from "@/hooks/useUser.ts";
+import {useGetPotentialFriends, useSearchUsers} from "@/hooks/useUser.ts";
 import { ScrollArea } from "../../ui/scroll-area.tsx";
 import LoaderShape from "@/components/utils/loaders/LoaderShape/LoaderShape.tsx";
 import SearchBar from "@/components/find-users/UserSearch/SearchBar.tsx";
 import UserSearchCard from "@/components/find-users/UserSearch/UserSearchCard.tsx";
 import LoadMoreTrigger from "@/components/find-users/LoadMoreTrigger.tsx";
+import useDebounce from "@/hooks/useDebounce.ts";
 
 function UserSearch() {
+    const [searchQuery, setSearchQuery] = useState("");
+    const debouncedSearchQuery = useDebounce(searchQuery, 500);
+    const isSearching = debouncedSearchQuery.length > 0;
+
+    // Fetch potential friends when not searching
     const {
-        data,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage,
-        isPending,
+        data: potentialFriendsData,
+        fetchNextPage: fetchPotentialFriendsNextPage,
+        hasNextPage: hasPotentialFriendsNextPage,
+        isFetchingNextPage: isFetchingPotentialFriendsNextPage,
+        isPending: isPotentialFriendsPending,
     } = useGetPotentialFriends(12);
 
-    const [searchQuery, setSearchQuery] = useState("");
+    // Fetch search results when searching
+    const {
+        data: searchData,
+        fetchNextPage: fetchSearchNextPage,
+        hasNextPage: hasSearchNextPage,
+        isFetchingNextPage: isFetchingSearchNextPage,
+        isPending: isSearchPending,
+    } = useSearchUsers(debouncedSearchQuery, 12);
 
-    const allUsers = data?.pages.flatMap(page => page.data) || [];
+    // Determine which data source to use based on search state
+    const displayData = isSearching ? searchData : potentialFriendsData;
+    const fetchNextPage = isSearching ? fetchSearchNextPage : fetchPotentialFriendsNextPage;
+    const hasNextPage = isSearching ? hasSearchNextPage : hasPotentialFriendsNextPage;
+    const isFetchingNextPage = isSearching ? isFetchingSearchNextPage : isFetchingPotentialFriendsNextPage;
+    const isPending = isSearching ? isSearchPending : isPotentialFriendsPending;
 
-    // Filter users based on search query
-    const filteredUsers = allUsers.filter(
-        (user) =>
-            user.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            user.email?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    // Get all users from the selected data source
+    const allUsers = displayData?.pages.flatMap(page => page.data) || [];
 
     return (
         <div className="flex flex-col h-full">
@@ -36,13 +50,13 @@ function UserSearch() {
             <div className="flex-1 min-h-0">
                 {isPending ? (
                     <LoaderShape className={"flex h-full items-center justify-center p-8"} />
-                ) : filteredUsers && filteredUsers.length > 0 ? (
+                ) : allUsers && allUsers.length > 0 ? (
                     <ScrollArea className="h-full">
                         <div className="grid gap-4 px-4 md:grid-cols-2 lg:grid-cols-3">
-                            {filteredUsers.map((user, index) => (
+                            {allUsers.map((user, index) => (
                                 <UserSearchCard
                                     {...user}
-                                    key={index}
+                                    key={user.id || index}
                                 />
                             ))}
                         </div>
@@ -57,7 +71,9 @@ function UserSearch() {
                         <div className="max-w-md">
                             <h3 className="mb-2 text-lg font-medium">No users found</h3>
                             <p className="text-sm text-muted-foreground">
-                                Try adjusting your search query or explore different keywords to find users.
+                                {isSearching
+                                    ? "Try adjusting your search query or explore different keywords to find users."
+                                    : "There are no potential friends to display at the moment."}
                             </p>
                         </div>
                     </div>

@@ -1,6 +1,5 @@
 import { Search } from "lucide-react";
 import {Input} from "@/components/ui/input.tsx";
-import {getSearchUsers} from "@/services/user-service.ts";
 
 interface SearchBarProps {
     searchQuery: string;
@@ -18,7 +17,6 @@ function SearchBar({ searchQuery, setSearchQuery }: SearchBarProps) {
                     className="pl-8"
                     value={searchQuery}
                     onChange={(e) => {
-                        getSearchUsers({query: e.target.value});
                         setSearchQuery(e.target.value)
                     }}
                 />

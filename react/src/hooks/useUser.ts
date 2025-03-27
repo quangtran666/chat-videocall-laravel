@@ -1,5 +1,11 @@
 import {useInfiniteQuery, useQuery} from "@tanstack/react-query";
-import {getMe, getPotentialFriends, getReceivedFriendRequests, getSentFriendRequests} from "@/services/user-service.ts";
+import {
+    getMe,
+    getPotentialFriends,
+    getReceivedFriendRequests,
+    getSearchUsers,
+    getSentFriendRequests
+} from "@/services/user-service.ts";
 
 export const useUser = () => {
     return useQuery({
@@ -88,5 +94,46 @@ export const useGetReceivedFriendRequests = ( limit = 9 ) => {
                 pageParams: data.pageParams
             }
         }
+    })
+}
+
+export const useSearchUsers = (query: string, per_page = 12) => {
+    return useInfiniteQuery({
+        queryKey: ['search-users', query],
+        queryFn: ({ pageParam = 1 }) => getSearchUsers({ query, page: pageParam, per_page }),
+        initialPageParam: 1,
+        getNextPageParam: (lastPage) => {
+            // @ts-ignore
+            if (lastPage.data.current_page >= lastPage.data.last_page) {
+                return undefined
+            }
+
+            // @ts-ignore
+            return lastPage.data.current_page + 1;
+        },
+        select: (data) => {
+            return {
+                pages: data.pages.map(page => ({
+                    // @ts-ignore
+                    data: page.data.data,
+                    // @ts-ignore
+                    current_page: page.data.current_page,
+                    // @ts-ignore
+                    per_page: page.data.per_page,
+                    // @ts-ignore
+                    total: page.data.total,
+                    // @ts-ignore
+                    last_page: page.data.last_page,
+                    // @ts-ignore
+                    has_more: page.data.current_page < page.data.last_page
+                })),
+                pageParams: data.pageParams
+            }
+        },
+        enabled: query.length > 0,
+        // How long data stays fresh before being marked as stale and refetched in the background by React Query
+        staleTime: 1000 * 60,
+        // How long inactive data remains in cache before being removed
+        gcTime: 1000 * 60 * 2,
     })
 }
