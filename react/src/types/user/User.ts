@@ -16,3 +16,5 @@ export const ExtendedUserSchema = UserSchema.extend({
 
 export type UserType = z.infer<typeof UserSchema>;
 export type ExtendedUserType = z.infer<typeof ExtendedUserSchema>;
+
+export type FriendAction = 'send' | 'accept' | 'reject' | 'cancel';

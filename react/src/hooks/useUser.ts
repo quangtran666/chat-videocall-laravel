@@ -1,11 +1,13 @@
-import {useInfiniteQuery, useQuery} from "@tanstack/react-query";
+import {useInfiniteQuery, useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {
     getMe,
     getPotentialFriends,
     getReceivedFriendRequests,
     getSearchUsers,
-    getSentFriendRequests
+    getSentFriendRequests, performFriendAction
 } from "@/services/user-service.ts";
+import {toast} from "sonner"
+import {FriendAction} from "@/types/user/User.ts";
 
 export const useUser = () => {
     return useQuery({
@@ -135,5 +137,38 @@ export const useSearchUsers = (query: string, per_page = 12) => {
         staleTime: 1000 * 60,
         // How long inactive data remains in cache before being removed
         gcTime: 1000 * 60 * 2,
+    })
+}
+
+export const useFriendAction = (action: FriendAction) => {
+    const queryClient = useQueryClient();
+
+    const getSuccessMessage = (action: FriendAction) => {
+        switch (action) {
+            case "send": return 'Friend request sent successfully';
+            case "accept": return 'Friend request accepted successfully';
+            case "reject": return 'Friend request rejected successfully';
+            case "cancel": return 'Friend request canceled successfully';
+        }
+    }
+
+    const invalidateQueries = async (action: FriendAction) => {
+        if (action === 'send' || action === 'cancel') {
+            await queryClient.invalidateQueries({ queryKey: ['potential-friends'] });
+            await queryClient.invalidateQueries({ queryKey: ['sent-friend-requests'] });
+        } else if (action === 'accept' || action === 'reject' ) {
+            await queryClient.invalidateQueries({ queryKey: ['received-friend-requests'] })
+        }
+    }
+
+    return useMutation({
+        mutationFn: (userId: string) => performFriendAction(action, userId),
+        onSuccess: async () => {
+            toast.success(getSuccessMessage(action));
+            await invalidateQueries(action);
+        },
+        onError: (error: any) => {
+            toast.error(error.response?.data?.message || `Failed to ${action} friend request`);
+        }
     })
 }

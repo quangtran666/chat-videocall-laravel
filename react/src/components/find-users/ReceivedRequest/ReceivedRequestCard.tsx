@@ -1,9 +1,9 @@
-import {toast} from "sonner";
 import {UserAvatar} from "@/components/utils/UserAvatar.tsx";
 import {Check, Clock, X} from "lucide-react";
 import {formatDistanceToNow} from "date-fns";
 import {Badge} from "@/components/ui/badge.tsx";
 import {Button} from "@/components/ui/button.tsx";
+import {useFriendAction} from "@/hooks/useUser.ts";
 
 type SentFriendCardProps = {
     id: string;
@@ -15,12 +15,15 @@ type SentFriendCardProps = {
 }
 
 function ReceivedRequestCard({id, name, email, avatar_url, created_at, mutual_friends_count }: SentFriendCardProps) {
-    const handleAcceptRequest = (requestId: string) => {
-        toast.success(`Friend request accepted for ${requestId}`)
+    const acceptRequest = useFriendAction('accept');
+    const rejectRequest = useFriendAction('reject');
+
+    const handleAcceptRequest = async () => {
+        await acceptRequest.mutateAsync(id);
     }
 
-    const handleRejectRequest = (requestId: string) => {
-        toast.success(`Friend request declined for ${requestId}`)
+    const handleRejectRequest = async () => {
+        await rejectRequest.mutateAsync(id);
     }
 
     return (
@@ -40,12 +43,21 @@ function ReceivedRequestCard({id, name, email, avatar_url, created_at, mutual_fr
                 </div>
 
                 <div className="flex flex-col gap-2">
-                    <Button size="sm" onClick={() => handleAcceptRequest(id)}>
-                        <Check className="mr-1 h-4 w-4"/>
+                    <Button
+                        size="sm"
+                        onClick={handleAcceptRequest}
+                        disabled={acceptRequest.isPending}
+                    >
+                        <Check className="mr-1 h-4 w-4"
+                    />
                         Accept
                     </Button>
-                    <Button size="sm" variant="outline"
-                            onClick={() => handleRejectRequest(id)}>
+                    <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={handleRejectRequest}
+                        disabled={rejectRequest.isPending}
+                    >
                         <X className="mr-1 h-4 w-4"/>
                         Decline
                     </Button>

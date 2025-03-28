@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
+use App\Enums\FriendActionType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pagination\CursorPaginationRequest;
+use App\Http\Requests\User\FriendActionRequest;
 use App\Http\Requests\User\UserSearchRequest;
 use App\Http\Resources\UserResource;
 use App\Services\UserService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
+use Throwable;
 
 class UserController extends Controller
 {
@@ -71,5 +74,31 @@ class UserController extends Controller
             'total' => $searchResults->total(),
             'last_page' => $searchResults->lastPage(),
         ], 'Users retrieved successfully');
+    }
+
+    /**
+     * Handle friend actions (send, accept, reject, cancel)
+     *
+     * @param FriendActionRequest $request
+     * @return JsonResponse
+     * @throws Throwable
+     */
+    public function handleFriendAction(FriendActionRequest $request) : JsonResponse
+    {
+        $action = FriendActionType::from($request->input('action'));
+        $userId = $request->input('user_id');
+
+        $result = match($action) {
+            FriendActionType::SEND => $this->userService->sendFriendRequest($userId),
+            FriendActionType::ACCEPT => $this->userService->acceptFriendRequest($userId),
+            FriendActionType::REJECT => $this->userService->rejectFriendRequest($userId),
+            FriendActionType::CANCEL => $this->userService->cancelFriendRequest($userId),
+        };
+
+        if (! $result['success']) {
+            return $this->errorResponse($result['message']);
+        }
+
+        return $this->successResponse([], $result['message']);
     }
 }

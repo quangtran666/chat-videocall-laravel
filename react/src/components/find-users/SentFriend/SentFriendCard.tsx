@@ -4,6 +4,7 @@ import {Clock, X} from "lucide-react";
 import {formatDistanceToNow} from "date-fns";
 import {Button} from "@/components/ui/button.tsx";
 import {Badge} from "@/components/ui/badge.tsx";
+import { useFriendAction } from "@/hooks/useUser";
 
 type SentFriendCardProps = {
     id: string;
@@ -15,8 +16,10 @@ type SentFriendCardProps = {
 }
 
 function SentFriendCard({id, name, email, avatar_url, created_at, mutual_friends_count }: SentFriendCardProps) {
-    const handleCancelRequest = (requestId: string) => {
-        toast.success(`Request canceled for ${requestId}`);
+    const cancelRequest = useFriendAction('cancel');
+
+    const handleCancelRequest = async () => {
+        await cancelRequest.mutateAsync(id);
     }
 
     return (
@@ -35,7 +38,12 @@ function SentFriendCard({id, name, email, avatar_url, created_at, mutual_friends
                     </div>
                 </div>
             </div>
-            <Button size="sm" variant="outline" onClick={() => handleCancelRequest(id)}>
+            <Button
+                size="sm"
+                variant="outline"
+                onClick={handleCancelRequest}
+                disabled={cancelRequest.isPending}
+            >
                 <X className="mr-1 h-4 w-4"/>
                 Cancel
             </Button>

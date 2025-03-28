@@ -21,6 +21,8 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::get('/potential-friends', [UserController::class, 'getPotentialFriends']);
            Route::get('/sent-friend-requests', [UserController::class, 'getSentFriendRequests']);
            Route::get('/received-friend-requests', [UserController::class, 'getReceivedFriendRequests']);
+
+           Route::post('/action', [UserController::class, 'handleFriendAction']);
        });
     });
 
