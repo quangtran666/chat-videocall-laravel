@@ -86,7 +86,7 @@ function ChatList() {
                     {filteredChats.map((chat) => (
                         <Link
                             key={chat.id}
-                            to={`/chats/${chat.id}`}
+                            to={`/chats/conversation/${chat.id}`}
                             className="flex items-center gap-3 rounded-lg p-3 hover:bg-accent"
                         >
                             <div className="relative">

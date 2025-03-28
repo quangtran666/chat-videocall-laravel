@@ -43,6 +43,7 @@ class ConversationService
             ];
         }
 
+        // Check if a conversation already exists
         $conversation = Conversation::where(static function ($query) use ($currentUser, $otherUserId) {
             $query->where('user_one_id', $currentUser->id)
                 ->where('user_two_id', $otherUserId);
