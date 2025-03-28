@@ -2,8 +2,9 @@
 
 use App\Http\Controllers\Api\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Api\Auth\SocialiteController;
-use App\Http\Controllers\Api\Auth\UserController;
+use App\Http\Controllers\Api\Conversation\ConversationController;
 use App\Http\Controllers\Api\Room\RoomController;
+use App\Http\Controllers\Api\User\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('login', [AuthenticatedSessionController::class, 'login']);
@@ -23,6 +24,9 @@ Route::middleware('auth:sanctum')->group(function () {
            Route::get('/sent-friend-requests', [UserController::class, 'getSentFriendRequests']);
            Route::get('/received-friend-requests', [UserController::class, 'getReceivedFriendRequests']);
            Route::post('/action', [UserController::class, 'handleFriendAction']);
+       });
+       Route::prefix('conversations')->group(function () {
+          Route::post('/', [ConversationController::class, 'store']);
        });
     });
 

@@ -1,13 +1,22 @@
 import {UserAvatar} from "@/components/utils/UserAvatar.tsx";
 import {Badge} from "@/components/ui/badge.tsx";
-import {Users} from "lucide-react";
+import {MessageSquare, MoreHorizontal, Phone, Users, Video} from "lucide-react";
 import {ExtendedUserType} from "@/types/user/User.ts";
+import { Button } from "../ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import {useCreateConversation} from "@/hooks/useConversation.ts";
 
 interface FriendItemProps {
     friend: ExtendedUserType
 }
 
 function FriendItem({friend}: FriendItemProps) {
+    const createConversationMutation = useCreateConversation();
+
+    async function handleStartChat() {
+        await createConversationMutation.mutateAsync(friend.id)
+    }
+
     return (
         <div className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors">
             <div className="flex items-center gap-3">
@@ -39,40 +48,34 @@ function FriendItem({friend}: FriendItemProps) {
                 </div>
             </div>
 
-            {/*<TooltipProvider>*/}
-            {/*    <div className="flex items-center gap-1">*/}
-            {/*        {onMessage && (*/}
-            {/*            <Tooltip>*/}
-            {/*                <TooltipTrigger asChild>*/}
-            {/*                    <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" onClick={onMessage}>*/}
-            {/*                        <MessageSquare className="h-4 w-4" />*/}
-            {/*                    </Button>*/}
-            {/*                </TooltipTrigger>*/}
-            {/*                <TooltipContent>Message</TooltipContent>*/}
-            {/*            </Tooltip>*/}
-            {/*        )}*/}
-
-            {/*        {onViewProfile && (*/}
-            {/*            <Tooltip>*/}
-            {/*                <TooltipTrigger asChild>*/}
-            {/*                    <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" onClick={onViewProfile}>*/}
-            {/*                        <User className="h-4 w-4" />*/}
-            {/*                    </Button>*/}
-            {/*                </TooltipTrigger>*/}
-            {/*                <TooltipContent>View Profile</TooltipContent>*/}
-            {/*            </Tooltip>*/}
-            {/*        )}*/}
-
-            {/*        <Tooltip>*/}
-            {/*            <TooltipTrigger asChild>*/}
-            {/*                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">*/}
-            {/*                    <MoreHorizontal className="h-4 w-4" />*/}
-            {/*                </Button>*/}
-            {/*            </TooltipTrigger>*/}
-            {/*            <TooltipContent>More Options</TooltipContent>*/}
-            {/*        </Tooltip>*/}
-            {/*    </div>*/}
-            {/*</TooltipProvider>*/}
+            <div className="flex items-center gap-2">
+                <Button
+                    size="icon"
+                    onClick={handleStartChat}
+                    disabled={createConversationMutation.isPending}
+                    className="cursor-pointer"
+                >
+                    <MessageSquare className="h-5 w-5" />
+                </Button>
+                <Button size="icon" className="cursor-pointer">
+                    <Phone className="h-5 w-5" />
+                </Button>
+                <Button size="icon" className="cursor-pointer">
+                    <Video className="h-5 w-5" />
+                </Button>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                            <MoreHorizontal className="h-5 w-5" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuItem>View Profile</DropdownMenuItem>
+                        <DropdownMenuItem>Block User</DropdownMenuItem>
+                        <DropdownMenuItem className="text-destructive">Remove Friend</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
         </div>
     )
 }
