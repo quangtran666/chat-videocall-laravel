@@ -1,4 +1,3 @@
-import {toast} from "sonner";
 import {UserAvatar} from "@/components/utils/UserAvatar.tsx";
 import {Clock, X} from "lucide-react";
 import {formatDistanceToNow} from "date-fns";

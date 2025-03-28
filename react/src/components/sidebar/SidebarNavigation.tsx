@@ -1,4 +1,4 @@
-import {MessageSquare, Search, Settings, Users} from "lucide-react";
+import {MessageSquare, Search, Settings, Users, Users2} from "lucide-react";
 import {Link, useLocation} from "react-router";
 import {cn} from "@/lib/utils.ts";
 import {Badge} from "@/components/ui/badge.tsx";
@@ -20,6 +20,11 @@ const routes = [
         label: "Rooms",
         icon: Users,
         badge: pendingRoomRequests > 0 ? pendingRoomRequests : undefined,
+    },
+    {
+        path: "/friends",
+        label: "Friends",
+        icon: Users2,
     },
     {
         path: "/find-users",
@@ -48,6 +53,7 @@ function SidebarNavigation() {
                         location.pathname === route.path ? "bg-accent text-accent-foreground" : "text-muted-foreground",
                     )}
                 >
+                    <route.icon className="h-4 w-4" />
                     <span className="flex-1">{route.label}</span>
                     {route.badge && (
                         <Badge variant="default" className="h-5 min-w-5 px-1">
