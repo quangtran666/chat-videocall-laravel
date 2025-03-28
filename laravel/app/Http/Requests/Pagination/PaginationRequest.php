@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\User;
+namespace App\Http\Requests\Pagination;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserSearchRequest extends FormRequest
+class PaginationRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -14,7 +14,7 @@ class UserSearchRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'query' => 'required|string|min:1|max:255',
+            'query' => 'sometimes|max:255',
             'page' => 'sometimes|integer|min:1',
             'per_page' => 'sometimes|integer|min:1|max:100',
         ];

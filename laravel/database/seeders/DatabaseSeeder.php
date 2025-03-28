@@ -99,40 +99,54 @@ class DatabaseSeeder extends Seeder
 
     /**
      * Create friend relationships between users.
+     * @throws RandomException
      */
-    private function createFriendships($users)
+    private function createFriendships($users): void
     {
-        // Create some accepted friend requests (increased from 15 to 100)
-        for ($i = 0; $i < 100; $i++) {
-            $sender = $users->random();
-            $receiver = $users->where('id', '!=', $sender->id)->random();
+        // Ensure each user has approximately 20-30 friends
+        foreach ($users as $user) {
+            // Determine random number of friends for this user (between 20-30)
+            $targetFriendCount = random_int(20, 30);
 
-            // Skip if friendship already exists
-            if (Friend::where('user_id', $sender->id)->where('friend_id', $receiver->id)->exists() ||
-                Friend::where('user_id', $receiver->id)->where('friend_id', $sender->id)->exists()) {
-                continue;
+            // Get current friend count
+            $currentFriendCount = Friend::where('user_id', $user->id)->count();
+
+            // Calculate how many more friends we need to add
+            $friendsToAdd = max(0, $targetFriendCount - $currentFriendCount);
+
+            if ($friendsToAdd > 0) {
+                // Get potential friends (users who are not already friends with this user)
+                $potentialFriends = $users->where('id', '!=', $user->id)
+                    ->whereNotIn('id', Friend::where('user_id', $user->id)->pluck('friend_id')->toArray());
+
+                // If we have enough potential friends
+                if ($potentialFriends->count() >= $friendsToAdd) {
+                    $newFriends = $potentialFriends->random($friendsToAdd);
+
+                    foreach ($newFriends as $friend) {
+                        // Create accepted friend request
+                        FriendRequest::create([
+                            'sender_id' => $user->id,
+                            'receiver_id' => $friend->id,
+                            'status' => RequestStatus::ACCEPTED->value,
+                        ]);
+
+                        // Create friendship records (both ways)
+                        Friend::create([
+                            'user_id' => $user->id,
+                            'friend_id' => $friend->id,
+                        ]);
+
+                        Friend::create([
+                            'user_id' => $friend->id,
+                            'friend_id' => $user->id,
+                        ]);
+                    }
+                }
             }
-
-            // Create accepted friend request
-            FriendRequest::create([
-                'sender_id' => $sender->id,
-                'receiver_id' => $receiver->id,
-                'status' => RequestStatus::ACCEPTED->value,
-            ]);
-
-            // Create friendship records (both ways)
-            Friend::create([
-                'user_id' => $sender->id,
-                'friend_id' => $receiver->id,
-            ]);
-
-            Friend::create([
-                'user_id' => $receiver->id,
-                'friend_id' => $sender->id,
-            ]);
         }
 
-        // Create some pending friend requests (increased from 5 to 30)
+        // Create some pending friend requests (30)
         for ($i = 0; $i < 30; $i++) {
             $sender = $users->random();
             $receiver = $users->where('id', '!=', $sender->id)->random();

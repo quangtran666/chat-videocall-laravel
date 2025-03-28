@@ -61,3 +61,9 @@ export const performFriendAction = async (action: FriendAction, userId: string)=
     })
     return response.data;
 }
+
+export const getUserFriends = async ({ query, page, per_page} : PaginateRequest) => {
+    const params = createPaginateParams(query ?? "", page ?? 1, per_page ?? 12);
+    const response = await axiosInstance.get<CursorPaginateResponse<ExtendedUserType>>(`user/friends?${params.toString()}`);
+    return response.data;
+}

@@ -342,4 +342,30 @@ class UserService
             'message' => 'Friend request canceled successfully'
         ];
     }
+
+    /**
+     * Search through the current user's friends by name
+     *
+     * @param string|null $query The search query
+     * @param int $perPage Number of results per page
+     * @param int $page Current page number
+     * @return LengthAwarePaginator
+     */
+    public function getUserFriends(?string $query, int $perPage = 9, int $page = 1): LengthAwarePaginator
+    {
+        $currentUser = Auth::user();
+
+        if ($query)
+        {
+            $friendIds = $currentUser?->friends->pluck('users.id')->toArray();
+
+            return User::search($query)
+                ->whereIn('id', $friendIds)
+                ->paginate($perPage, 'page', $page);
+        }
+
+        return $currentUser?->friends()
+            ->orderBy('id')
+            ->paginate($perPage, ['*'], 'page', $page);
+    }
 }

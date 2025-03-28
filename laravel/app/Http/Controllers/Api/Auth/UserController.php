@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Enums\FriendActionType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pagination\CursorPaginationRequest;
+use App\Http\Requests\Pagination\PaginationRequest;
 use App\Http\Requests\User\FriendActionRequest;
-use App\Http\Requests\User\UserSearchRequest;
 use App\Http\Resources\UserResource;
 use App\Services\UserService;
 use App\Traits\ApiResponse;
@@ -59,7 +59,7 @@ class UserController extends Controller
         ], 'Users who sent you friend requests retrieved successfully');
     }
 
-    public function searchUsers(UserSearchRequest $request): JsonResponse
+    public function searchUsers(PaginationRequest $request): JsonResponse
     {
         $searchResults = $this->userService->searchUsers(
             $request->get('query'),
@@ -100,5 +100,22 @@ class UserController extends Controller
         }
 
         return $this->successResponse([], $result['message']);
+    }
+
+    public function getUserFriends(PaginationRequest $request) : JsonResponse
+    {
+        $friends = $this->userService->getUserFriends(
+            $request->get('query'),
+            $request->get('per_page', 12),
+            $request->get('page', 1)
+        );
+
+        return $this->successResponse([
+            'data' => UserResource::collection($friends->items()),
+            'current_page' => $friends->currentPage(),
+            'per_page' => $friends->perPage(),
+            'total' => $friends->total(),
+            'last_page' => $friends->lastPage(),
+        ], 'Friends retrieved successfully');
     }
 }

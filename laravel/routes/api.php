@@ -18,10 +18,10 @@ Route::middleware('auth:sanctum')->group(function () {
        Route::get('/', static function () { return auth()->user(); });
        Route::get('/search', [UserController::class, 'searchUsers']);
        Route::prefix('friends')->group(function () {
+           Route::get('/', [UserController::class, 'getUserFriends']);
            Route::get('/potential-friends', [UserController::class, 'getPotentialFriends']);
            Route::get('/sent-friend-requests', [UserController::class, 'getSentFriendRequests']);
            Route::get('/received-friend-requests', [UserController::class, 'getReceivedFriendRequests']);
-
            Route::post('/action', [UserController::class, 'handleFriendAction']);
        });
     });
