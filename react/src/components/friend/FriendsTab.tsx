@@ -25,6 +25,9 @@ function FriendsTab({debouncedSearchQuery}: FriendTabProps) {
 
     const allFriends = data?.pages.flatMap(page => page.data) || []
 
+    // @ts-ignore
+    const totalFriends = data?.pages[0].total;
+
     return (
         <Tabs
             defaultValue="all"
@@ -40,7 +43,7 @@ function FriendsTab({debouncedSearchQuery}: FriendTabProps) {
                     >
                         All Friends
                         <Badge variant="secondary" className="ml-2">
-                            {allFriends.length}
+                            {totalFriends}
                         </Badge>
                     </TabsTrigger>
                     <TabsTrigger
@@ -49,7 +52,7 @@ function FriendsTab({debouncedSearchQuery}: FriendTabProps) {
                     >
                         Online
                         <Badge variant="secondary" className="ml-2 bg-green-500 text-white">
-                            {allFriends.length}
+                            {totalFriends}
                         </Badge>
                     </TabsTrigger>
                 </TabsList>
