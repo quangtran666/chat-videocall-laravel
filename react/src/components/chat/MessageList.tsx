@@ -3,7 +3,7 @@ import {ScrollArea} from "../ui/scroll-area"
 import {UserAvatar} from "@/components/utils/UserAvatar.tsx";
 import {useState} from "react";
 import {TooltipProvider} from "../ui/tooltip";
-import useScrollToBottom from "@/hooks/chat/useScrollToBottom.tsx";
+import UseChatScroll from "@/hooks/chat/useChatScroll.tsx";
 import {MessageType} from "@/types/conversation/Conversation.ts";
 import {useUser} from "@/hooks/useUser.ts";
 import {formatDistanceToNow} from "date-fns";
@@ -22,7 +22,7 @@ function MessageList({messages, isGroup = false, onReactionAdd, onReplyMessage}:
         data: user
     } = useUser();
 
-    const {scrollRef} = useScrollToBottom<MessageType>(messages)
+    const {scrollRef} = UseChatScroll<MessageType>(messages)
 
     const [hoveredMessageId, setHoveredMessageId] = useState<number | null>(null)
     //
@@ -81,7 +81,7 @@ function MessageList({messages, isGroup = false, onReactionAdd, onReplyMessage}:
 
     return (
         <TooltipProvider>
-            <ScrollArea className="h-full p-4" ref={scrollRef}>
+            <ScrollArea className="h-full p-4">
                 <div className="flex flex-col gap-4">
                     {messages.map((message) => {
                         // // Handle system messages
@@ -219,6 +219,7 @@ function MessageList({messages, isGroup = false, onReactionAdd, onReplyMessage}:
                             </div>
                         )
                     })}
+                    <span ref={scrollRef} />
                 </div>
             </ScrollArea>
         </TooltipProvider>

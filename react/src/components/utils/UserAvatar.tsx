@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
+import {memo} from "react";
 
 interface UserAvatarProps {
     src: string | null | undefined;
@@ -8,7 +9,7 @@ interface UserAvatarProps {
     size?: "sm" | "md" | "lg"
 }
 
-export function UserAvatar({ src, alt, className, size = "md" }: UserAvatarProps) {
+export const UserAvatar = memo(function UserAvatar({ src, alt, className, size = "md" }: UserAvatarProps) {
     const sizeClasses = {
         sm: "h-8 w-8",
         md: "h-10 w-10",
@@ -27,4 +28,4 @@ export function UserAvatar({ src, alt, className, size = "md" }: UserAvatarProps
             <AvatarFallback>{initials}</AvatarFallback>
         </Avatar>
     )
-}
+})

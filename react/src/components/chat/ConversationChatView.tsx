@@ -1,29 +1,32 @@
 import {useState} from "react";
-import { UserAvatar } from "../utils/UserAvatar";
+import {UserAvatar} from "../utils/UserAvatar";
 import {Button} from "@/components/ui/button.tsx";
 import {Info, Phone, Video} from "lucide-react";
 import ChatInput from "./ChatInput";
 import MessageList from "./MessageList";
 import {useGetConversationMessages, useGetOtherUserInConversation} from "@/hooks/useConversation.ts";
 import {MessageType} from "@/types/conversation/Conversation.ts";
+import ConversationSkeleton from "@/components/chat/Skeleton/ConversationSkeleton.tsx";
+import MessageListSkeleton from "@/components/chat/Skeleton/MessageListSkeleton.tsx";
 
 interface IndividualChatViewProps {
     chatId: string
 }
 
-function ConversationChatView({ chatId }: IndividualChatViewProps) {
+function ConversationChatView({chatId}: IndividualChatViewProps) {
     const {
         data: messages,
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
-        isPending,
+        isPending: isMessagesLoading,
     } = useGetConversationMessages(chatId, 12)
 
     const messagesFlat = messages?.pages?.flatMap((page) => page.data) || []
 
     const {
         data: otherUser,
+        isPending: isOtherUserLoading,
     } = useGetOtherUserInConversation(chatId);
 
     const [replyToMessage, setReplyToMessage] = useState<MessageType | null>(null)
@@ -104,31 +107,41 @@ function ConversationChatView({ chatId }: IndividualChatViewProps) {
         <div className="flex h-full flex-col">
             <div className="flex items-center justify-between border-b p-4">
                 <div className="flex items-center gap-3">
-                    <UserAvatar src={otherUser?.avatar_url} alt={otherUser?.name} />
-                    <div>
-                        <div className="font-medium">{otherUser?.name}</div>
-                        {/*<div className="text-xs text-muted-foreground">{contact.lastSeen}</div>*/}
-                        <div className="text-xs text-muted-foreground">Temp</div>
-                    </div>
+                    {isOtherUserLoading ? (
+                        <ConversationSkeleton />
+                    ) : (
+                        <>
+                            <UserAvatar src={otherUser?.avatar_url} alt={otherUser?.name}/>
+                            <div>
+                                <div className="font-medium">{otherUser?.name}</div>
+                                {/*<div className="text-xs text-muted-foreground">{contact.lastSeen}</div>*/}
+                                <div className="text-xs text-muted-foreground">Temp</div>
+                            </div>
+                        </>
+                    )}
                 </div>
                 <div className="flex gap-1">
                     <Button variant="ghost" size="icon" aria-label="Voice call">
-                        <Phone className="h-4 w-4" />
+                        <Phone className="h-4 w-4"/>
                     </Button>
                     <Button variant="ghost" size="icon" aria-label="Video call">
-                        <Video className="h-4 w-4" />
+                        <Video className="h-4 w-4"/>
                     </Button>
                     <Button variant="ghost" size="icon" aria-label="Info">
-                        <Info className="h-4 w-4" />
+                        <Info className="h-4 w-4"/>
                     </Button>
                 </div>
             </div>
             <div className="flex-1 overflow-hidden">
-                <MessageList
-                    messages={messagesFlat}
-                    onReactionAdd={handleReactionAdd}
-                    onReplyMessage={handleReplyMessage}
-                />
+                {isMessagesLoading ? (
+                    <MessageListSkeleton />
+                ) : (
+                    <MessageList
+                        messages={messagesFlat}
+                        onReactionAdd={handleReactionAdd}
+                        onReplyMessage={handleReplyMessage}
+                    />
+                )}
             </div>
             <ChatInput
                 onSendMessage={handleSendMessage}
