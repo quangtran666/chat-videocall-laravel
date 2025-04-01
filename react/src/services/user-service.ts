@@ -2,28 +2,12 @@ import axiosInstance from "@/plugins/axios.ts";
 import {ExtendedUserType, FriendAction, UserSchema, UserType} from "@/types/user/User.ts";
 import {CursorPaginateRequest, CursorPaginateResponse} from "@/types/paginate/cursorPaginateResponse.ts";
 import {PaginateRequest, PaginateResponse} from "@/types/paginate/paginateResponse.ts";
+import { createCursorParams, createPaginateParams } from "@/types/helper";
 
 export const getMe = async () : Promise<UserType> => {
     const response = await axiosInstance.get("user");
 
     return UserSchema.parse(response.data);
-}
-
-const createCursorParams = (pageParam: number | null, limit: number) => {
-    const params = new URLSearchParams();
-    if (pageParam) params.append('cursor', pageParam.toString());
-    params.append('limit', limit.toString());
-
-    return params;
-}
-
-const createPaginateParams = ( query: string, page: number, per_page: number ) => {
-    const params = new URLSearchParams();
-    params.append('query', query);
-    params.append('per_page', per_page.toString());
-    params.append('page', page.toString());
-
-    return params;
 }
 
 export const getPotentialFriends = async ({ pageParam, limit } : CursorPaginateRequest) => {

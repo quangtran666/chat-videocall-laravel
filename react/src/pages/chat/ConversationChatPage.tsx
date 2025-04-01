@@ -1,4 +1,4 @@
-import IndividualChatView from "@/components/chat/IndividualChatView.tsx";
+import ConversationChatView from "@/components/chat/ConversationChatView.tsx";
 import {useParams} from "react-router";
 
 export default function ConversationChatPage() {
@@ -6,5 +6,5 @@ export default function ConversationChatPage() {
     // In a real app, you would fetch chat data based on the ID
     // For this example, we'll use mock data
 
-    return <IndividualChatView chatId={params.chatId!} />
+    return <ConversationChatView chatId={params.chatId!} />
 }

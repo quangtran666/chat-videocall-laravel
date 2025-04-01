@@ -15,7 +15,7 @@ use Laravel\Scout\Engines\Engine;
 use Laravel\Scout\Searchable;
 
 /**
- *
+ * 
  *
  * @property int $id
  * @property string $name

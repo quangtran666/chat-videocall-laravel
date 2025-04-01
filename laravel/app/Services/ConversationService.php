@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Conversation;
 use App\Models\Friend;
 use App\Models\User;
+use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -56,7 +57,7 @@ class ConversationService
             return [
                 'success' => true,
                 'exists' => true,
-                'conversation' => $conversation
+                'conversation' => $conversation,
             ];
         }
 
@@ -74,7 +75,7 @@ class ConversationService
             return [
                 'success' => true,
                 'exists' => false,
-                'conversation' => $conversation
+                'conversation' => $conversation,
             ];
         } catch (\Exception $e) {
             DB::rollBack();
@@ -83,5 +84,48 @@ class ConversationService
                 'message' => 'Failed to create conversation: ' . $e->getMessage()
             ];
         }
+    }
+
+    /**
+     * Get the other user in a conversation
+     *
+     * @param Conversation $conversation
+     * @return array
+     */
+    public function getOtherUserInConversation(Conversation $conversation) : array
+    {
+        // Get the other user in the conversation
+        $otherUserId = $conversation->user_one_id === Auth::id() ? $conversation->user_two_id : $conversation->user_one_id;
+        $otherUser = User::find($otherUserId);
+
+        if (!$otherUser) {
+            return [
+                'success' => false,
+                'message' => 'Other user not found'
+            ];
+        }
+
+        return [
+            'success' => true,
+            'other_user' => $otherUser,
+        ];
+    }
+
+
+    /**
+     * Get messages from a conversation with cursor pagination
+     *
+     * @param Conversation $conversation
+     * @param int $limit
+     * @param string|null $cursor
+     * @return CursorPaginator
+     */
+    public function getConversationMessages(Conversation $conversation, int $limit = 9, ?string $cursor = null): CursorPaginator
+    {
+        // Lấy tin nhắn và thông tin người gửi
+        return $conversation->messages()
+            ->with('sender')
+            ->orderBy('messages.created_at', 'desc')
+            ->cursorPaginate($limit, ['*'], 'cursor', $cursor);
     }
 }

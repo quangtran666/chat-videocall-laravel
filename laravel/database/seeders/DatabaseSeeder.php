@@ -274,8 +274,8 @@ class DatabaseSeeder extends Seeder
     private function createConversationMessages($conversations)
     {
         foreach ($conversations as $conversation) {
-            // Increased message count from 3-15 to 10-30
-            $messageCount = random_int(10, 30);
+            // Set message count to approximately 30 messages per conversation
+            $messageCount = random_int(25, 35); // Average will be around 30
             $participants = [$conversation->user_one_id, $conversation->user_two_id];
 
             $messages = [];
@@ -292,50 +292,50 @@ class DatabaseSeeder extends Seeder
 
                 $messages[] = $message;
 
-                // Add file attachments for some messages (increased probability)
-                if (random_int(1, 3) === 1) {  // Changed from 1 in 5 to 1 in 3
-                    MessageFile::factory()->create([
-                        'message_id' => $message->id,
-                    ]);
-                }
+                // Add file attachments for some messages (commented out as requested)
+                // if (random_int(1, 3) === 1) {  // 1 in 3 chance of having a file
+                //     MessageFile::factory()->create([
+                //         'message_id' => $message->id,
+                //     ]);
+                // }
 
-                // Add reactions to some messages (increased probability)
-                if (random_int(1, 2) === 1) {  // Changed from 1 in 3 to 1 in 2
-                    $reactorId = $sender === $conversation->user_one_id ? $conversation->user_two_id : $conversation->user_one_id;
-
-                    MessageReaction::factory()->create([
-                        'message_id' => $message->id,
-                        'user_id' => $reactorId,
-                    ]);
-                }
+                // Add reactions to some messages (commented out as requested)
+                // if (random_int(1, 2) === 1) {  // 1 in 2 chance of having reactions
+                //     $reactorId = $sender === $conversation->user_one_id ? $conversation->user_two_id : $conversation->user_one_id;
+                //
+                //     MessageReaction::factory()->create([
+                //         'message_id' => $message->id,
+                //         'user_id' => $reactorId,
+                //     ]);
+                // }
             }
 
-            // Add some reply messages (increased from 2 to 8)
-            if (count($messages) > 0) {
-                $replyCount = min(8, count($messages));
-                for ($i = 0; $i < $replyCount; $i++) {
-                    $originalMessage = $messages[array_rand($messages)];
-                    $sender = $originalMessage->sender_id === $conversation->user_one_id ? $conversation->user_two_id : $conversation->user_one_id;
-
-                    Message::create([
-                        'content' => fake()->paragraph(),
-                        'type' => MessageType::User->value,
-                        'sender_id' => $sender,
-                        'reply_id' => $originalMessage->id,
-                        'messageable_id' => $conversation->id,
-                        'messageable_type' => Conversation::class,
-                    ]);
-                }
-            }
-
-            // Add a system message
-            Message::create([
-                'content' => 'Conversation started',
-                'type' => MessageType::System->value,
-                'sender_id' => $conversation->user_one_id,
-                'messageable_id' => $conversation->id,
-                'messageable_type' => Conversation::class,
-            ]);
+            // Add some reply messages (commented out as requested)
+            // if (count($messages) > 0) {
+            //     $replyCount = min(8, count($messages));
+            //     for ($i = 0; $i < $replyCount; $i++) {
+            //         $originalMessage = $messages[array_rand($messages)];
+            //         $sender = $originalMessage->sender_id === $conversation->user_one_id ? $conversation->user_two_id : $conversation->user_one_id;
+            //
+            //         Message::create([
+            //             'content' => fake()->paragraph(),
+            //             'type' => MessageType::User->value,
+            //             'sender_id' => $sender,
+            //             'reply_id' => $originalMessage->id,
+            //             'messageable_id' => $conversation->id,
+            //             'messageable_type' => Conversation::class,
+            //         ]);
+            //     }
+            // }
+            //
+            // // Add a system message
+            // Message::create([
+            //     'content' => 'Conversation started',
+            //     'type' => MessageType::System->value,
+            //     'sender_id' => $conversation->user_one_id,
+            //     'messageable_id' => $conversation->id,
+            //     'messageable_type' => Conversation::class,
+            // ]);
         }
     }
 

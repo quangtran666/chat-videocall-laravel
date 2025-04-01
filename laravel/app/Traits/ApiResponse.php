@@ -46,6 +46,17 @@ trait ApiResponse
     }
 
     /**
+     * Trả về response không được phép (403)
+     *
+     * @param string $message
+     * @return JsonResponse
+     */
+    protected function forbiddenResponse(string $message = 'Forbidden'): JsonResponse
+    {
+        return $this->errorResponse($message, 403);
+    }
+
+    /**
      * Trả về response không tìm thấy (404)
      *
      * @param string $message

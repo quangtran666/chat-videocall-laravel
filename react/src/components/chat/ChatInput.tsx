@@ -7,11 +7,11 @@ import { Progress } from "../ui/progress";
 import {Button} from "../ui/button";
 import {Popover, PopoverContent, PopoverTrigger} from "../ui/popover";
 import { Textarea } from "../ui/textarea";
-import {Message} from "@/components/chat/MessageList.tsx";
+import {MessageType} from "@/types/conversation/Conversation.ts";
 
 interface ChatInputProps {
     onSendMessage: (content: string, files?: File[], replyToId?: string) => void
-    replyTo: Message | null
+    replyTo: MessageType | null
     onCancelReply: () => void
 }
 
@@ -48,12 +48,12 @@ function ChatInput({ onSendMessage, replyTo, onCancelReply }: ChatInputProps) {
     }
 
     const handleSendMessage = () => {
-        if (message.trim() || files.length > 0) {
-            onSendMessage(message, files, replyTo?.id)
-            setMessage("")
-            setFiles([])
-            setUploadProgress({})
-        }
+        // if (message.trim() || files.length > 0) {
+        //     onSendMessage(message, files, replyTo?.id)
+        //     setMessage("")
+        //     setFiles([])
+        //     setUploadProgress({})
+        // }
     }
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,7 +107,8 @@ function ChatInput({ onSendMessage, replyTo, onCancelReply }: ChatInputProps) {
                     <div className="mb-3 flex items-center gap-2 rounded-md border bg-muted/30 p-2 pr-3">
                         <MessageSquare className="h-4 w-4 text-muted-foreground" />
                         <div className="flex-1 overflow-hidden">
-                            <div className="text-xs font-medium">Replying to {replyTo.senderName || "User"}</div>
+                            {/*<div className="text-xs font-medium">Replying to {replyTo.senderName || "User"}</div>*/}
+                            <div className="text-xs font-medium">Replying to {"User"}</div>
                             <div className="truncate text-xs text-muted-foreground">{replyTo.content}</div>
                         </div>
                         <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full" onClick={onCancelReply}>

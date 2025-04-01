@@ -27,6 +27,9 @@ Route::middleware('auth:sanctum')->group(function () {
        });
        Route::prefix('conversations')->group(function () {
           Route::post('/', [ConversationController::class, 'store']);
+          Route::get("/{conversation}/other-user", [ConversationController::class, 'getOtherUser']);
+          Route::get('/{conversation}/messages', [ConversationController::class, 'getMessages']);
+          Route::post('/{conversation}/messages', [ConversationController::class, 'sendMessage']);
        });
     });
 
