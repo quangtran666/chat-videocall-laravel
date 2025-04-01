@@ -16,11 +16,11 @@ interface IndividualChatViewProps {
 function ConversationChatView({chatId}: IndividualChatViewProps) {
     const {
         data: messages,
-        fetchNextPage,
+        fetchNextPage: fetchNextMessages,
         hasNextPage,
         isFetchingNextPage,
         isPending: isMessagesLoading,
-    } = useGetConversationMessages(chatId, 12)
+    } = useGetConversationMessages(chatId, 9)
 
     const messagesFlat = messages?.pages?.flatMap((page) => page.data) || []
 
@@ -140,6 +140,10 @@ function ConversationChatView({chatId}: IndividualChatViewProps) {
                         messages={messagesFlat}
                         onReactionAdd={handleReactionAdd}
                         onReplyMessage={handleReplyMessage}
+                        // Use Infinity Query Related Functions
+                        fetchNextPage={fetchNextMessages}
+                        hasNextPage={hasNextPage}
+                        isFetchingNextPage={isFetchingNextPage}
                     />
                 )}
             </div>

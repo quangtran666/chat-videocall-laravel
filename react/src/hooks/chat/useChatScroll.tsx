@@ -1,19 +1,30 @@
 import {useEffect, useRef} from "react";
 
 function UseChatScroll<T>(dependency : T[]) {
-    const scrollRef = useRef<HTMLSpanElement>(null)
+    const bottomScrollRef = useRef<HTMLSpanElement>(null)
+    const scrollAreaRef = useRef<HTMLDivElement>(null)
 
     const hasScrolledToBottom = useRef(false);
 
     // This effect will run when the component mounts and scroll to the bottom
     useEffect(() => {
-        if (scrollRef.current && !hasScrolledToBottom.current) {
-            scrollRef.current.scrollIntoView()
+        if (bottomScrollRef.current && !hasScrolledToBottom.current) {
+            bottomScrollRef.current.scrollIntoView()
             hasScrolledToBottom.current = true;
         }
     }, [])
 
-    return { scrollRef }
+    const scrollTop = () => {
+        if (scrollAreaRef.current) {
+            // Get the actual viewport element inside ScrollArea
+            const viewportElement = scrollAreaRef.current.querySelector('[data-slot="scroll-area-viewport"]');
+            if (viewportElement) {
+                viewportElement.scrollTop = 300;
+            }
+        }
+    }
+
+    return { bottomScrollRef, scrollAreaRef, scrollTop }
 }
 
 export default UseChatScroll;

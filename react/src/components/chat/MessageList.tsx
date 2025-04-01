@@ -7,23 +7,32 @@ import UseChatScroll from "@/hooks/chat/useChatScroll.tsx";
 import {MessageType} from "@/types/conversation/Conversation.ts";
 import {useUser} from "@/hooks/useUser.ts";
 import {formatDistanceToNow} from "date-fns";
+import LoadMoreTrigger from "@/components/find-users/LoadMoreTrigger.tsx";
+import {InfiniteQueryObserverResult} from "@tanstack/react-query";
 
 interface MessageListProps {
     messages: MessageType[]
     isGroup?: boolean
     onReactionAdd: (messageId: string, emoji: string) => void
     onReplyMessage: (messageId: string) => void
+    fetchNextPage: () => Promise<InfiniteQueryObserverResult<any, unknown>>
+    hasNextPage: boolean
+    isFetchingNextPage: boolean
 }
 
 const EMOJI_REACTIONS = ["👍", "❤️", "😂", "😮", "😢", "🙏", "🔥", "👏"]
 
-function MessageList({messages, isGroup = false, onReactionAdd, onReplyMessage}: MessageListProps) {
-    const {
-        data: user
-    } = useUser();
-
-    const {scrollRef} = UseChatScroll<MessageType>(messages)
-
+function MessageList({
+                         messages,
+                         isGroup = false,
+                         onReactionAdd,
+                         onReplyMessage,
+                         fetchNextPage,
+                         hasNextPage,
+                         isFetchingNextPage
+                     }: MessageListProps) {
+    const {data: user} = useUser();
+    const {bottomScrollRef, scrollAreaRef, scrollTop} = UseChatScroll<MessageType>(messages)
     const [hoveredMessageId, setHoveredMessageId] = useState<number | null>(null)
     //
     // const formatFileSize = (bytes: number) => {
@@ -81,8 +90,17 @@ function MessageList({messages, isGroup = false, onReactionAdd, onReplyMessage}:
 
     return (
         <TooltipProvider>
-            <ScrollArea className="h-full p-4">
+            <ScrollArea className="h-full p-4" ref={scrollAreaRef}>
                 <div className="flex flex-col gap-4">
+                    {/* Pivot to trigger load more data */}
+                    <LoadMoreTrigger
+                        onLoadMore={async () => {
+                            await fetchNextPage()
+                            scrollTop()
+                        }}
+                        hasMore={hasNextPage}
+                        isLoading={isFetchingNextPage}
+                    />
                     {messages.map((message) => {
                         // // Handle system messages
                         // if (message.isSystemMessage) {
@@ -214,12 +232,13 @@ function MessageList({messages, isGroup = false, onReactionAdd, onReplyMessage}:
                                     </div>
                                     {/*)}*/}
 
-                                    <div className="mt-1 text-xs text-muted-foreground">{formatDistanceToNow(message.created_at, {addSuffix: true})}</div>
+                                    <div
+                                        className="mt-1 text-xs text-muted-foreground">{formatDistanceToNow(message.created_at, {addSuffix: true})}</div>
                                 </div>
                             </div>
                         )
                     })}
-                    <span ref={scrollRef} />
+                    <span ref={bottomScrollRef}/>
                 </div>
             </ScrollArea>
         </TooltipProvider>
