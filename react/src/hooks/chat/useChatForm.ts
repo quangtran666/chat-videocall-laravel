@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { MessageType, SendMessageFormSchema, SendMessageFormType } from "@/types/conversation/Conversation.ts";
+import { MessageType, SendMessageRequestSchema, SendMessageRequestType } from "@/types/conversation/Conversation.ts";
 import * as React from "react";
 
 export const useChatForm = (
@@ -10,8 +10,8 @@ export const useChatForm = (
 ) => {
     const [uploadProgress, setUploadProgress] = useState<Record<string, number>>({});
 
-    const form = useForm<SendMessageFormType>({
-        resolver: zodResolver(SendMessageFormSchema),
+    const form = useForm<SendMessageRequestType>({
+        resolver: zodResolver(SendMessageRequestSchema),
         defaultValues: {
             content: "",
             files: [],
@@ -25,27 +25,16 @@ export const useChatForm = (
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
-
             const content = getValues("content") || "";
             const currentFiles = getValues("files") || [];
-            const replyId = replyTo?.id?.toString() || null;
-
-            console.log(`Content: ${content}, Files: ${currentFiles}, Reply ID: ${replyId}`);
-
+            onSendMessage(content, currentFiles, replyTo?.id?.toString());
             form.reset({ content: "", files: [] });
         }
     };
 
-    const handleSendMessage = (values: SendMessageFormType) => {
-        console.log("Called");
-        // const message = values.content || "";
-        // if (message.trim() || (values.files && values.files.length > 0)) {
-        //     onSendMessage(message, values.files, replyTo?.id?.toString());
-        //     form.reset({ content: "", files: [] });
-        //     setUploadProgress({});
-        // }
-
-        console.log(values);
+    const handleSendMessage = (values: SendMessageRequestType) => {
+        onSendMessage(values.content, values.files, values.replyId?.toString());
+        form.reset({ content: "", files: [] });
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

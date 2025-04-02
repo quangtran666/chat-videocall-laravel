@@ -6,5 +6,5 @@ export default function ConversationChatPage() {
     // In a real app, you would fetch chat data based on the ID
     // For this example, we'll use mock data
 
-    return <ConversationChatView chatId={params.chatId!} />
+    return <ConversationChatView conversationId={params.chatId!} />
 }

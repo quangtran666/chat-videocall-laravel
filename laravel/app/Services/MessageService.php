@@ -19,14 +19,6 @@ class MessageService
      */
     public function sendConversationMessage(Conversation $conversation, User $sender, string $content): array
     {
-        // Kiểm tra người gửi có thuộc cuộc trò chuyện không
-        if ($conversation->user_one_id !== $sender->id || $conversation->user_two_id !== $sender->id) {
-            return [
-                'success' => false,
-                'message' => 'Unauthorized: User is not part of this conversation'
-            ];
-        }
-
         try {
             DB::beginTransaction();
 

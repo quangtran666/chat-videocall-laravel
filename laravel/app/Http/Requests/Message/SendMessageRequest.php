@@ -11,6 +11,9 @@ class SendMessageRequest extends FormRequest
         return true;
     }
 
+    /**
+     * Todo: Add reply Id and files
+     */
     public function rules(): array
     {
         return [

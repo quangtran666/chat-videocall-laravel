@@ -125,7 +125,7 @@ class ConversationService
         // Lấy tin nhắn và thông tin người gửi
         return $conversation->messages()
             ->with('sender')
-            ->orderBy('messages.id', 'desc')
+            ->orderBy('messages.created_at', 'desc')
             ->cursorPaginate($limit, ['*'], 'cursor', $cursor);
     }
 }

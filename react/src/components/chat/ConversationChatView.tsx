@@ -4,62 +4,47 @@ import {Button} from "@/components/ui/button.tsx";
 import {Info, Phone, Video} from "lucide-react";
 import ChatInput from "./chat-input/ChatInput.tsx";
 import MessageList from "./MessageList";
-import {useGetConversationMessages, useGetOtherUserInConversation} from "@/hooks/useConversation.ts";
+import {
+    useGetConversationMessages,
+    useGetOtherUserInConversation,
+    useSendMessageToConversation
+} from "@/hooks/useConversation.ts";
 import {MessageType} from "@/types/conversation/Conversation.ts";
 import ConversationSkeleton from "@/components/chat/Skeleton/ConversationSkeleton.tsx";
 import MessageListSkeleton from "@/components/chat/Skeleton/MessageListSkeleton.tsx";
 
 interface IndividualChatViewProps {
-    chatId: string
+    conversationId: string
 }
 
-function ConversationChatView({chatId}: IndividualChatViewProps) {
+function ConversationChatView({conversationId}: IndividualChatViewProps) {
     const {
         data: messages,
         fetchNextPage: fetchNextMessages,
         hasNextPage,
         isFetchingNextPage,
         isPending: isMessagesLoading,
-    } = useGetConversationMessages(chatId, 9)
+    } = useGetConversationMessages(conversationId, 9)
 
-    const messagesFlat = messages?.pages?.flatMap((page) => page.data) || []
+    const messagesFlat = (messages?.pages?.flatMap((page) => page.data) || []).reverse()
+
+    console.log(messages)
 
     const {
         data: otherUser,
         isPending: isOtherUserLoading,
-    } = useGetOtherUserInConversation(chatId);
+    } = useGetOtherUserInConversation(conversationId);
+
+    const { mutateAsync: sendMessage } = useSendMessageToConversation(conversationId);
 
     const [replyToMessage, setReplyToMessage] = useState<MessageType | null>(null)
 
-    const handleSendMessage = (content: string, files?: File[], replyToId?: string) => {
-        // Find the message being replied to
-        // const replyMessage = replyToId ? messages.find((m) => m.id === replyToId) : null
-        //
-        // const newMessage: Message = {
-        //     id: Date.now().toString(),
-        //     content,
-        //     timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-        //     sender: "me",
-        //     reactions: [],
-        //     files: files?.map((file) => ({
-        //         name: file.name,
-        //         size: file.size,
-        //         type: file.type,
-        //         url: URL.createObjectURL(file),
-        //     })),
-        // }
-        //
-        // // Add reply information if replying to a message
-        // if (replyMessage) {
-        //     newMessage.replyTo = {
-        //         id: replyMessage.id,
-        //         content: replyMessage.content,
-        //         senderName: replyMessage.senderName,
-        //     }
-        // }
-        //
-        // setMessages([...messages, newMessage])
-        // setReplyToMessage(null) // Clear reply state after sending
+    const handleSendMessage = async (content: string, files?: File[], replyToId?: string) => {
+        await sendMessage({
+            content,
+            replyId: replyToId ?? null,
+            files: files || [],
+        })
     }
 
     const handleReactionAdd = (messageId: string, emoji: string) => {

@@ -1,11 +1,11 @@
 import { Control } from "react-hook-form";
 import { FormControl, FormField, FormItem } from "@/components/ui/form.tsx";
 import { Textarea } from "../../ui/textarea.tsx";
-import { MessageType, SendMessageFormType } from "@/types/conversation/Conversation.ts";
+import { MessageType, SendMessageRequestType } from "@/types/conversation/Conversation.ts";
 import * as React from "react";
 
 interface MessageTextareaProps {
-    control: Control<SendMessageFormType>;
+    control: Control<SendMessageRequestType>;
     handleKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
     replyTo: MessageType | null;
 }

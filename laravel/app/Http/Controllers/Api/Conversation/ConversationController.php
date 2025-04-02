@@ -88,10 +88,14 @@ class ConversationController extends Controller
      */
     public function sendMessage(SendMessageRequest $request, Conversation $conversation) : JsonResponse
     {
+        if ($conversation->user_one_id !== Auth::id() && $conversation->user_two_id !== Auth::id()) {
+            return $this->forbiddenResponse('You are not authorized to view this conversation');
+        }
+
         $result = $this->messageService->sendConversationMessage($conversation, Auth::user(), $request->get('content'));
 
         if (! $result['success']) {
-            return $this->forbiddenResponse($result['message']);
+            return $this->errorResponse($result['message']);
         }
 
         return $this->successResponse(['message' => $result['message']], 'Message sent successfully');

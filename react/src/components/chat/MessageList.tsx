@@ -9,6 +9,7 @@ import {useUser} from "@/hooks/useUser.ts";
 import {formatDistanceToNow} from "date-fns";
 import LoadMoreTrigger from "@/components/find-users/LoadMoreTrigger.tsx";
 import {InfiniteQueryObserverResult} from "@tanstack/react-query";
+import MessageStatus from "@/components/chat/MessageStatus.tsx";
 
 interface MessageListProps {
     messages: MessageType[]
@@ -152,7 +153,12 @@ function MessageList({
                                         <div
                                             className={cn("rounded-lg px-3 py-2", isMe ? "bg-primary text-primary-foreground" : "bg-muted")}
                                         >
-                                            {message.content}
+                                            <div className={cn("flex items-center", {
+                                                "opacity-70": message.status === 'sending'
+                                            })}>
+                                                {message.content}
+                                                <MessageStatus status={message.status} />
+                                            </div>
                                         </div>
 
                                         {/*    /!* Message actions *!/*/}
