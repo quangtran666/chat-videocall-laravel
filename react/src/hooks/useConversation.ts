@@ -42,9 +42,9 @@ export const useGetConversationMessages = (conversationId: string, limit = 9) =>
         queryKey: ['conversation-messages', conversationId],
         queryFn: ({ pageParam }) => getConversationMessages({ conversationId, pageParam, limit }),
         initialPageParam: null as number | null,
-        getNextPageParam: (pageParam) => {
+        getNextPageParam: (lastPage) => {
             // @ts-ignore
-            return pageParam.data.next_cursor
+            return lastPage.data.next_cursor
         },
         select: (data) => {
             return {

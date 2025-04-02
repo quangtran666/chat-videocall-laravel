@@ -28,8 +28,6 @@ function ConversationChatView({conversationId}: IndividualChatViewProps) {
 
     const messagesFlat = (messages?.pages?.flatMap((page) => page.data) || []).reverse()
 
-    console.log(messages)
-
     const {
         data: otherUser,
         isPending: isOtherUserLoading,

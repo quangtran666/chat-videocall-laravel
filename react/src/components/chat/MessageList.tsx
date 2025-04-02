@@ -23,18 +23,10 @@ interface MessageListProps {
 
 const EMOJI_REACTIONS = ["👍", "❤️", "😂", "😮", "😢", "🙏", "🔥", "👏"]
 
-function MessageList({
-                         messages,
-                         isGroup = false,
-                         onReactionAdd,
-                         onReplyMessage,
-                         fetchNextPage,
-                         hasNextPage,
-                         isFetchingNextPage
-                     }: MessageListProps) {
+function MessageList({messages, isGroup = false, onReactionAdd, onReplyMessage, fetchNextPage, hasNextPage, isFetchingNextPage}: MessageListProps) {
     const {data: user} = useUser();
     const {bottomScrollRef, scrollAreaRef, scrollTop} = UseChatScroll<MessageType>(messages)
-    const [hoveredMessageId, setHoveredMessageId] = useState<number | null>(null)
+    const [hoveredMessageId, setHoveredMessageId] = useState<string | null>(null)
     //
     // const formatFileSize = (bytes: number) => {
     //     if (bytes < 1024) return bytes + " B"
@@ -153,12 +145,12 @@ function MessageList({
                                         <div
                                             className={cn("rounded-lg px-3 py-2", isMe ? "bg-primary text-primary-foreground" : "bg-muted")}
                                         >
-                                            <div className={cn("flex items-center", {
-                                                "opacity-70": message.status === 'sending'
-                                            })}>
+                                            {/*<div className={cn("flex items-center", {*/}
+                                            {/*    "opacity-70": message.status === 'sending'*/}
+                                            {/*})}>*/}
                                                 {message.content}
-                                                <MessageStatus status={message.status} />
-                                            </div>
+                                            {/*    <MessageStatus status={message.status} />*/}
+                                            {/*</div>*/}
                                         </div>
 
                                         {/*    /!* Message actions *!/*/}
