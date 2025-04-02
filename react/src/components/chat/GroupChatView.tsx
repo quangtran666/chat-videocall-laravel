@@ -5,7 +5,7 @@ import { UserAvatar } from "../utils/UserAvatar"
 import {useState} from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import MessageList, {Message} from "./MessageList";
-import ChatInput from "./ChatInput";
+import ChatInput from "./chat-input/ChatInput.tsx";
 import AddMemberDialog from "@/components/chat/AddMemberDialog.tsx";
 
 interface GroupChatViewProps {

@@ -12,6 +12,7 @@ use App\Services\ConversationService;
 use App\Services\MessageService;
 use App\Traits\ApiResponse;
 use Auth;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Throwable;
 
@@ -83,15 +84,11 @@ class ConversationController extends Controller
 
     /**
      * Gửi tin nhắn trong cuộc trò chuyện
-     * @throws \Exception
+     * @throws Exception
      */
     public function sendMessage(SendMessageRequest $request, Conversation $conversation) : JsonResponse
     {
-        $result = $this->messageService->sendConversationMessage(
-            $conversation,
-            Auth::user(),
-            $request->get('content')
-        );
+        $result = $this->messageService->sendConversationMessage($conversation, Auth::user(), $request->get('content'));
 
         if (! $result['success']) {
             return $this->forbiddenResponse($result['message']);

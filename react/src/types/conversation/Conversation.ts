@@ -24,3 +24,17 @@ export const MessageSchema = z.object({
 export type MessageType = z.infer<typeof MessageSchema>;
 
 export type MessageCursorPaginateRequest = CursorPaginateRequest & { conversationId: string }
+
+export const SendMessageFormSchema = z.object({
+    content: z.string(),
+    replyId: z.number().nullable(),
+    files: z.array(z.instanceof(File)).optional(),
+})
+
+export type SendMessageFormType = z.infer<typeof SendMessageFormSchema>;
+
+export const SendMessageRequestSchema = SendMessageFormSchema.extend({
+    conversationId: z.string(),
+})
+
+export type SendMessageRequestType = z.infer<typeof SendMessageRequestSchema>;

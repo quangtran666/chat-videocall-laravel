@@ -2,7 +2,7 @@ import {useState} from "react";
 import {UserAvatar} from "../utils/UserAvatar";
 import {Button} from "@/components/ui/button.tsx";
 import {Info, Phone, Video} from "lucide-react";
-import ChatInput from "./ChatInput";
+import ChatInput from "./chat-input/ChatInput.tsx";
 import MessageList from "./MessageList";
 import {useGetConversationMessages, useGetOtherUserInConversation} from "@/hooks/useConversation.ts";
 import {MessageType} from "@/types/conversation/Conversation.ts";

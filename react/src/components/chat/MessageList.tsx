@@ -3,7 +3,7 @@ import {ScrollArea} from "../ui/scroll-area"
 import {UserAvatar} from "@/components/utils/UserAvatar.tsx";
 import {useState} from "react";
 import {TooltipProvider} from "../ui/tooltip";
-import UseChatScroll from "@/hooks/chat/useChatScroll.tsx";
+import UseChatScroll from "@/hooks/chat/useChatScroll.ts";
 import {MessageType} from "@/types/conversation/Conversation.ts";
 import {useUser} from "@/hooks/useUser.ts";
 import {formatDistanceToNow} from "date-fns";
