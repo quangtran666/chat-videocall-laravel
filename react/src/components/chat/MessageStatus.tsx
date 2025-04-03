@@ -1,24 +1,27 @@
-import {AlertCircle, CheckCircle2, Loader2} from "lucide-react";
+import {AlertCircle, LoaderCircle} from "lucide-react";
 
-function MessageStatus({status}: { status?: string }) {
-    if (!status || status === 'sent') {
-        return <CheckCircle2 className="h-3 w-3 text-green-500 ml-1" />;
-    }
+type MessageStatusProps = {
+    status: 'sent' | 'sending' | 'error';
+}
 
+function MessageStatus({status}: MessageStatusProps) {
     if (status === 'sending') {
-        return <Loader2 className="h-3 w-3 text-gray-500 ml-1 animate-spin" />;
-    }
-
-    if (status === 'error') {
         return (
-            <div className="flex items-center">
-                <AlertCircle className="h-3 w-3 text-red-500 ml-1" />
-                <span className="text-xs text-red-500 ml-1">Failed</span>
+            <div className="text-sm flex gap-1 items-center text-muted-foreground mt-1 justify-end">
+                <LoaderCircle className="animate-spin h-5"/>
+                <span>Sending</span>
             </div>
         );
     }
 
-    return null;
+    if (status === 'error') {
+        return (
+            <div className="text-sm flex gap-1 items-center text-muted-foreground mt-1 justify-end">
+                <AlertCircle className="h-5 text-red-500"/>
+                <span>Error</span>
+            </div>
+        );
+    }
 }
 
 export default MessageStatus;

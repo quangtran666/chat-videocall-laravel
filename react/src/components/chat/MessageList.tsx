@@ -23,7 +23,7 @@ interface MessageListProps {
 
 const EMOJI_REACTIONS = ["👍", "❤️", "😂", "😮", "😢", "🙏", "🔥", "👏"]
 
-function MessageList({messages, isGroup = false, onReactionAdd, onReplyMessage, fetchNextPage, hasNextPage, isFetchingNextPage}: MessageListProps) {
+function MessageList({ messages, isGroup = false, onReactionAdd, onReplyMessage, fetchNextPage, hasNextPage, isFetchingNextPage}: MessageListProps) {
     const {data: user} = useUser();
     const {bottomScrollRef, scrollAreaRef, scrollTop} = UseChatScroll<MessageType>(messages)
     const [hoveredMessageId, setHoveredMessageId] = useState<string | null>(null)
@@ -145,13 +145,11 @@ function MessageList({messages, isGroup = false, onReactionAdd, onReplyMessage, 
                                         <div
                                             className={cn("rounded-lg px-3 py-2", isMe ? "bg-primary text-primary-foreground" : "bg-muted")}
                                         >
-                                            {/*<div className={cn("flex items-center", {*/}
-                                            {/*    "opacity-70": message.status === 'sending'*/}
-                                            {/*})}>*/}
-                                                {message.content}
-                                            {/*    <MessageStatus status={message.status} />*/}
-                                            {/*</div>*/}
+                                            {message.content}
                                         </div>
+
+                                        {/* Message Status */}
+                                        {isMe && message.status && <MessageStatus status={message.status}/>}
 
                                         {/*    /!* Message actions *!/*/}
                                         {/*    {hoveredMessageId === message.id && (*/}

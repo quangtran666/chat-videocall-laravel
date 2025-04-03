@@ -1,5 +1,6 @@
 import axios from "axios";
 import Cookies from 'js-cookie';
+import {echo} from "@/plugins/echo.ts";
 
 const baseURL = "http://localhost:8000";
 
@@ -7,6 +8,7 @@ const axiosInstance = axios.create({
     baseURL: `${baseURL}/api/`,
     headers: {
         "XDEBUG_SESSION": "PHPSTORM",
+        "X-Socket-ID": echo.socketId(),
     },
     withCredentials: true,
     withXSRFToken: true

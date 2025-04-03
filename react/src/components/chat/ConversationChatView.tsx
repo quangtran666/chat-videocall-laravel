@@ -12,6 +12,7 @@ import {
 import {MessageType} from "@/types/conversation/Conversation.ts";
 import ConversationSkeleton from "@/components/chat/Skeleton/ConversationSkeleton.tsx";
 import MessageListSkeleton from "@/components/chat/Skeleton/MessageListSkeleton.tsx";
+import {useConversationBroadcast} from "@/hooks/chat/broadcast/useConversationBroadcast.ts";
 
 interface IndividualChatViewProps {
     conversationId: string
@@ -25,17 +26,16 @@ function ConversationChatView({conversationId}: IndividualChatViewProps) {
         isFetchingNextPage,
         isPending: isMessagesLoading,
     } = useGetConversationMessages(conversationId, 9)
-
-    const messagesFlat = (messages?.pages?.flatMap((page) => page.data) || []).reverse()
-
     const {
         data: otherUser,
         isPending: isOtherUserLoading,
     } = useGetOtherUserInConversation(conversationId);
-
-    const { mutateAsync: sendMessage } = useSendMessageToConversation(conversationId);
-
+    const {mutateAsync: sendMessage} = useSendMessageToConversation(conversationId);
+    useConversationBroadcast(conversationId);
     const [replyToMessage, setReplyToMessage] = useState<MessageType | null>(null)
+
+
+    const messagesFlat = (messages?.pages?.flatMap((page) => page.data) || []).reverse()
 
     const handleSendMessage = async (content: string, files?: File[], replyToId?: string) => {
         await sendMessage({
@@ -91,7 +91,7 @@ function ConversationChatView({conversationId}: IndividualChatViewProps) {
             <div className="flex items-center justify-between border-b p-4">
                 <div className="flex items-center gap-3">
                     {isOtherUserLoading ? (
-                        <ConversationSkeleton />
+                        <ConversationSkeleton/>
                     ) : (
                         <>
                             <UserAvatar src={otherUser?.avatar_url} alt={otherUser?.name}/>
@@ -117,7 +117,7 @@ function ConversationChatView({conversationId}: IndividualChatViewProps) {
             </div>
             <div className="flex-1 overflow-hidden">
                 {isMessagesLoading ? (
-                    <MessageListSkeleton />
+                    <MessageListSkeleton/>
                 ) : (
                     <MessageList
                         messages={messagesFlat}
