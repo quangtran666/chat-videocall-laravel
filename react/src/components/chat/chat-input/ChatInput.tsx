@@ -9,6 +9,7 @@ import AttachmentButton from "./input-buttons/AttachmentButton";
 import EmojiPicker from "@/components/chat/chat-input/EmojiPicker.tsx";
 import MessageTextarea from "./MessageTextarea";
 import SendButton from "./input-buttons/SendButton";
+import TypingIndicator from "@/components/chat/TypingIndicator/TypingIndicator.tsx";
 
 interface ChatInputProps {
     onSendMessage: (content: string, files?: File[], replyToId?: string) => void
@@ -33,6 +34,10 @@ function ChatInput({ onSendMessage, replyTo, onCancelReply }: ChatInputProps) {
     return (
         <TooltipProvider>
             <Form {...form}>
+                <TypingIndicator
+                    userTyping={['User1']}
+                />
+
                 <form onSubmit={form.handleSubmit(handleSendMessage)} className="border-t p-4">
                     {replyTo && (
                         <ReplyPreview replyTo={replyTo} onCancelReply={onCancelReply} />
