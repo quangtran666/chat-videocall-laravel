@@ -14,18 +14,13 @@ export function useConversationBroadcast(conversationId: string) {
     const queryClient = useQueryClient();
     const { data: user } = useUser();
 
-    useEffect(() => {
-        if (!conversationId || !echo || !user ) return;
-
-        // Subscribe to the private conversation channel
-        const channel = echo.private(`conversation.${conversationId}`);
-
+    function setupNewMessageListener(channel: any) {
         // Listen for new message events
         channel.listen(`.new.message`, (data: any) => {
             console.log(data);
 
             // Only process messages that aren't from the current user
-            if (data.sender.id === user.id) return;
+            if (data.sender.id === user?.id) return;
 
             // Format received a message to match the MessageType structure
             const newMessage: MessageType = {
@@ -76,10 +71,27 @@ export function useConversationBroadcast(conversationId: string) {
                 }
             });
         })
+    }
+
+    function setupChannelListeners(channel: any) {
+        setupNewMessageListener(channel);
+    }
+
+    function cleanupChannelListeners(channel: any) {
+        channel.stopListening(`.new.message`);
+        echo.leave(`conversation.${conversationId}`);
+    }
+
+    useEffect(() => {
+        if (!conversationId || !echo || !user ) return;
+
+        // Subscribe to the private conversation channel
+        const channel = echo.private(`conversation.${conversationId}`);
+
+        setupChannelListeners(channel);
 
         return () => {
-            channel.stopListening(`.new.message`);
-            echo.leave(`conversation.${conversationId}`);
+            cleanupChannelListeners(channel);
         }
     }, [conversationId, user, queryClient]);
 }
