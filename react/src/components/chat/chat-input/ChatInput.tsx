@@ -15,9 +15,11 @@ interface ChatInputProps {
     onSendMessage: (content: string, files?: File[], replyToId?: string) => void
     replyTo: MessageType | null
     onCancelReply: () => void
+    usersTyping: string[]
+    onTyping: (isTyping: boolean) => void
 }
 
-function ChatInput({ onSendMessage, replyTo, onCancelReply }: ChatInputProps) {
+function ChatInput({ onSendMessage, replyTo, onCancelReply, usersTyping, onTyping }: ChatInputProps) {
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const {
         form,
@@ -29,14 +31,16 @@ function ChatInput({ onSendMessage, replyTo, onCancelReply }: ChatInputProps) {
         handleSendMessage,
         handleEmojiSelect,
         removeFile
-    } = useChatForm(onSendMessage, replyTo);
+    } = useChatForm(onSendMessage, replyTo, onTyping);
 
     return (
         <TooltipProvider>
             <Form {...form}>
-                <TypingIndicator
-                    userTyping={['User1']}
-                />
+                {usersTyping.length > 0 && (
+                    <TypingIndicator
+                        userTyping={usersTyping}
+                    />
+                )}
 
                 <form onSubmit={form.handleSubmit(handleSendMessage)} className="border-t p-4">
                     {replyTo && (

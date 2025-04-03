@@ -122,8 +122,6 @@ class ConversationService
      */
     public function getConversationMessages(Conversation $conversation, int $limit = 9, ?string $cursor = null): CursorPaginator
     {
-        $sql = $conversation->messages()->with('sender')->orderBy('created_at', 'desc')->toSql();
-
         // Lấy tin nhắn và thông tin người gửi
         return $conversation->messages()
             ->with('sender')

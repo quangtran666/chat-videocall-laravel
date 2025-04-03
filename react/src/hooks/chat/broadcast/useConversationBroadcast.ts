@@ -1,6 +1,6 @@
 import {useQueryClient} from "@tanstack/react-query";
 import {useUser} from "@/hooks/useUser.ts";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {echo} from "@/plugins/echo.ts";
 import {MessageType} from "@/types/conversation/Conversation.ts";
 
@@ -13,6 +13,7 @@ import {MessageType} from "@/types/conversation/Conversation.ts";
 export function useConversationBroadcast(conversationId: string) {
     const queryClient = useQueryClient();
     const { data: user } = useUser();
+    const [userTyping, setUserTyping] = useState<string[]>([]);
 
     function setupNewMessageListener(channel: any) {
         // Listen for new message events
@@ -73,8 +74,30 @@ export function useConversationBroadcast(conversationId: string) {
         })
     }
 
+    function setupTypingListener(channel: any) {
+        channel.listenForWhisper('typing', (e: any) => {
+            if (e.userId === user?.id) return;
+
+            if (e.isTyping) {
+                setUserTyping(prev => {
+                    // Add user to a typing list if not already there
+                    if (!prev.includes(e.name)) {
+                        return [...prev, e.name];
+                    }
+                    return prev;
+                })
+            } else {
+                setUserTyping(prev => {
+                    // Remove user from a typing list
+                    return prev.filter(name => name !== e.name);
+                })
+            }
+        })
+    }
+
     function setupChannelListeners(channel: any) {
         setupNewMessageListener(channel);
+        setupTypingListener(channel);
     }
 
     function cleanupChannelListeners(channel: any) {
@@ -94,4 +117,17 @@ export function useConversationBroadcast(conversationId: string) {
             cleanupChannelListeners(channel);
         }
     }, [conversationId, user, queryClient]);
+
+    function sendTypingIndicator(isTyping: boolean) {
+        if (!user || !conversationId || !echo) return;
+
+        echo.private(`conversation.${conversationId}`)
+            .whisper('typing', {
+                name: user.name,
+                userId: user.id,
+                isTyping
+            });
+    }
+
+    return { userTyping, sendTypingIndicator }
 }

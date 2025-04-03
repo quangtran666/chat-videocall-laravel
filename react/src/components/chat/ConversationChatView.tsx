@@ -31,7 +31,7 @@ function ConversationChatView({conversationId}: IndividualChatViewProps) {
         isPending: isOtherUserLoading,
     } = useGetOtherUserInConversation(conversationId);
     const {mutateAsync: sendMessage} = useSendMessageToConversation(conversationId);
-    useConversationBroadcast(conversationId);
+    const {userTyping, sendTypingIndicator} = useConversationBroadcast(conversationId);
     const [replyToMessage, setReplyToMessage] = useState<MessageType | null>(null)
 
 
@@ -134,6 +134,8 @@ function ConversationChatView({conversationId}: IndividualChatViewProps) {
                 onSendMessage={handleSendMessage}
                 replyTo={replyToMessage}
                 onCancelReply={() => setReplyToMessage(null)}
+                onTyping={sendTypingIndicator}
+                usersTyping={userTyping}
             />
         </div>
     )
